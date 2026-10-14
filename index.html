@@ -1,400 +1,240 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NAVETTES INTERSITES</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NAVETTES INTERSITES — Démonstration</title>
 <style>
-:root{--bg:#10151d;--panel:#1a2330;--panel2:#222e3d;--text:#f3f6fa;--muted:#aab6c5;--blue:#2878e5;--green:#168653;--orange:#dc8518;--red:#c43c42;--border:#354457}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Arial,sans-serif}
-header{padding:18px 24px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
-h1{font-size:28px;letter-spacing:1px;margin:0}h2{font-size:20px;margin:0 0 16px}h3{font-size:15px;margin:0 0 10px}
-main{padding:18px 24px;max-width:1600px;margin:auto}
-.toolbar,.actions,.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-button{border:0;border-radius:6px;padding:10px 14px;color:white;background:var(--panel2);font-weight:bold;cursor:pointer}
-button:hover{filter:brightness(1.15)}button:disabled{opacity:.4;cursor:not-allowed}
-.blue{background:var(--blue)}.green{background:var(--green)}.orange{background:var(--orange);color:#171717}.red{background:var(--red)}.grey{background:#536171}
-.navbar{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
-.navbar button{flex:1;min-width:150px;min-height:42px}
-.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin:16px 0}
-.kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:15px}
-.kpi small{color:var(--muted);display:block;margin-bottom:8px}.kpi strong{font-size:27px}
-.charts{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px}
-.chart{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:15px;min-width:0}
-.barline{display:grid;grid-template-columns:44px 1fr 32px;align-items:center;gap:7px;margin:10px 0;font-size:12px}
-.track{height:12px;background:#303d4d;border-radius:8px;overflow:hidden}.fill{height:100%;background:#438cf2;border-radius:8px}
-.field{display:flex;flex-direction:column;gap:5px;min-width:150px;flex:1}
-label{font-size:12px;color:var(--muted)}
-input,select,textarea{width:100%;padding:9px;border:1px solid var(--border);border-radius:5px;background:#111923;color:white;font:inherit}
-input[type=checkbox],input[type=radio]{width:auto}
-.formgrid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin:14px 0}
-.formgrid .wide{grid-column:span 2}
-.tablewrap{overflow:auto;max-height:440px;border:1px solid var(--border);border-radius:6px}
-table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}
-th,td{padding:7px;border-bottom:1px solid var(--border);text-align:left}
-th{background:#273547;position:sticky;top:0;z-index:1}
-td input,td select{min-width:90px;padding:7px}
-.status{display:inline-block;padding:4px 7px;border-radius:4px;background:#344456}
-.urgent-tres{background:#ffeb3b;color:#cf2027;font-weight:bold}.urgent{background:#ffeb3b;color:#1764ce;font-weight:bold}.classique{background:#4bd17a;color:#111}
-.muted{color:var(--muted)}.hidden{display:none!important}.notice{padding:10px;border-radius:6px;background:#263b51;margin:10px 0}
-footer{color:var(--muted);font-size:12px;text-align:center;padding:15px}
-@media(max-width:900px){.charts{grid-template-columns:1fr 1fr}.charts .chart:first-child{grid-column:span 2}.formgrid{grid-template-columns:repeat(2,minmax(120px,1fr))}}
-@media(max-width:600px){main{padding:12px}.kpis{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}.charts .chart:first-child{grid-column:auto}.formgrid{grid-template-columns:1fr}.formgrid .wide{grid-column:auto}h1{font-size:22px}}
-@media print{body{background:white;color:black}header,.navbar,.toolbar,.actions,.no-print,footer{display:none!important}main{padding:0}.panel,.kpi,.chart{background:white;color:black;border:1px solid #bbb;break-inside:avoid}input,select,textarea{background:white;color:black;border:0}.tablewrap{max-height:none;overflow:visible}th{position:static;background:#eee;color:black}}
+:root{--bg:#031323;--side:#061c30;--panel:#06233c;--panel2:#0a2b49;--line:#174a70;--text:#edf6ff;--muted:#8eabc4;--blue:#087cf0;--orange:#f28b16;--green:#00a978;--purple:#793bd0;--teal:#009eac;--red:#df1735;--shadow:0 8px 22px #0005}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:12px "Segoe UI",Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;color:white;border:1px solid #ffffff1a;border-radius:5px;padding:8px 11px;background:#153c5d;font-weight:600}button:hover{filter:brightness(1.16)}button:disabled{opacity:.42;cursor:not-allowed}.blue{background:var(--blue)}.orange{background:var(--orange);color:#fff}.green{background:var(--green)}.purple{background:var(--purple)}.teal{background:var(--teal)}.red{background:var(--red)}.ghost{background:#102e49}.tiny{padding:4px 7px;font-size:11px}.hidden{display:none!important}
+.topbar{height:48px;background:linear-gradient(90deg,#064078,#062440);border-bottom:1px solid #176094;display:flex;align-items:center;gap:13px;padding:0 18px;position:sticky;top:0;z-index:20}.brand-icon{font-size:23px}.brand{font-size:16px;font-weight:800;letter-spacing:.6px}.top-spacer{flex:1}.user-info{font-size:10px;color:#d7eaff;border-left:1px solid #527491;padding-left:15px;line-height:1.4}
+.app{display:grid;grid-template-columns:148px minmax(0,1fr);min-height:calc(100vh - 48px)}aside{background:linear-gradient(180deg,#05223a,#04182a);border-right:1px solid #16466b;padding:10px 7px}aside button{width:100%;text-align:left;margin:2px 0;background:transparent;border:0;padding:10px 9px;font-size:11px;font-weight:500}aside button.active,aside button:hover{background:linear-gradient(90deg,#087df4,#0756b8);box-shadow:0 4px 12px #0078ff33}aside .sep{border-top:1px solid #1d4a6c;margin:10px 5px}
+main{padding:13px 14px 20px;min-width:0}.page-title{font-size:17px;font-weight:800;margin:0 0 9px}.actionbar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:12px}.actionbar button{min-height:37px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px}.actionbar .ico{font-size:16px}
+.kpis{display:grid;grid-template-columns:1.05fr .9fr .9fr 1.65fr 1.65fr 1.15fr 1.15fr;gap:7px;margin-bottom:11px}.tile,.panel{background:linear-gradient(145deg,#062640,#041b30);border:1px solid #144a70;border-radius:5px;box-shadow:var(--shadow);min-width:0}.tile{padding:10px 10px 8px;min-height:97px}.tile-title{font-size:10px;color:#c9e3f9;display:flex;align-items:center;gap:7px;margin-bottom:10px;white-space:nowrap}.big-number{font-size:23px;font-weight:800;letter-spacing:.3px}.sub{font-size:9px;color:var(--muted);margin-top:4px}.up{color:#00dc83}.leftarrow{color:#29a4ff}
+.chartbox{height:63px;display:flex;align-items:end;gap:4px;padding:2px 0 0}.chart-col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:end;align-items:center;height:100%;gap:3px}.bars{height:48px;display:flex;align-items:end;gap:2px;width:100%;justify-content:center}.bar{width:40%;min-width:3px;border-radius:2px 2px 0 0;background:#1693ff}.bar.b{background:#ff9b21}.chart-label{font-size:8px;color:#9ebbd4;white-space:nowrap}.legend{font-size:8px;color:#a9c4dc;display:flex;justify-content:center;gap:9px;margin-top:4px}.dot{display:inline-block;width:6px;height:6px;border-radius:2px;margin-right:3px}.donut-row{display:flex;align-items:center;gap:8px;justify-content:center}.donut{width:65px;height:65px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#00d28b 0 75%,#ff9b21 75% 90%,#147bff 90%)}.donut:before{content:"";grid-area:1/1;width:46px;height:46px;border-radius:50%;background:#06233c}.donut-label{grid-area:1/1;z-index:1;text-align:center;font-size:10px;font-weight:700}.donut-list{font-size:8px;color:#b9d3e9;line-height:1.8}.donut-list b{color:white}
+.searchline{display:flex;align-items:center;gap:8px;background:#05213a;border:1px solid #1a5077;border-radius:5px;padding:7px 10px;margin-bottom:10px}.searchline input{flex:1;min-width:0;background:transparent;border:0;color:white;outline:0}.searchline input::placeholder{color:#87a6c2}
+.panel{padding:10px 11px;margin-bottom:10px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.panel-head h2{font-size:12px;margin:0}.tablewrap{overflow:auto;max-width:100%}table{border-collapse:collapse;width:100%;font-size:10px;white-space:nowrap}th{background:#092c49;color:#cbe6ff;font-weight:600;text-align:left}th,td{padding:7px 8px;border-bottom:1px solid #124064}tbody tr:hover{background:#0b3455}.status{display:inline-block;border-radius:12px;padding:3px 8px;background:#1266b4;color:white;font-size:9px}.status.green{background:#00a978}.status.orange{background:#c9790d}.status.red{background:#bd2540}.status.grey{background:#52677a}.empty{color:var(--muted);padding:18px;text-align:center}
+.form-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}.form-tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.form-tools .spacer{flex:1}.fieldgrid{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:9px;margin:10px 0}.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field label{color:#a9c9e4;font-size:10px}.field input,.field select,.field textarea{width:100%;padding:8px;background:#031727;color:white;border:1px solid #205276;border-radius:4px;min-width:0}.field textarea{min-height:70px;resize:vertical}.wide{grid-column:span 2}.table-editor input,.table-editor select{width:105px;padding:6px;background:#031727;color:white;border:1px solid #205276;border-radius:3px}.table-editor th{position:sticky;top:0;z-index:2}.table-editor td{padding:4px}.note{border:1px solid #1d5b85;background:#092d49;color:#cbe8ff;padding:9px;border-radius:4px;margin:8px 0}.urgent-very{background:#fff12c!important;color:#c70020!important;font-weight:bold}.urgent{background:#fff12c!important;color:#0755bd!important;font-weight:bold}.normal{background:#32d28b!important;color:#08281b!important;font-weight:bold}.history{max-height:230px;overflow:auto}.badge{border-radius:4px;padding:3px 6px;background:#143b5c;color:#d9edff}.footer{color:#7397b4;font-size:9px;text-align:center;padding:8px}
+.modal{position:fixed;inset:0;background:#0009;z-index:50;display:grid;place-items:center;padding:15px}.modal-card{width:min(650px,100%);max-height:85vh;overflow:auto;background:#06243d;border:1px solid #2373a7;border-radius:8px;padding:16px;box-shadow:0 20px 80px #0009}.modal-card h2{margin:0 0 12px}.toast{position:fixed;bottom:18px;right:18px;z-index:80;background:#0b4974;border:1px solid #4aa7e8;padding:12px 16px;border-radius:6px;box-shadow:var(--shadow);max-width:360px}
+@media(max-width:1200px){.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.tile:nth-child(4),.tile:nth-child(5){min-height:105px}}
+@media(max-width:760px){.app{grid-template-columns:1fr}aside{display:flex;overflow:auto;padding:5px;position:sticky;top:48px;z-index:10}aside button{min-width:max-content;width:auto;padding:9px}.aside-label,.sep{display:none}.actionbar{grid-template-columns:repeat(2,minmax(0,1fr))}.actionbar button:last-child{grid-column:span 2}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.tile:nth-child(4),.tile:nth-child(5){grid-column:span 2}.fieldgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.wide{grid-column:span 2}.user-info{display:none}main{padding:10px}}
+@media print{body{background:white;color:black}.topbar,aside,.actionbar,.no-print,.footer{display:none!important}.app{display:block}main{padding:0}.panel,.tile{background:white;color:black;box-shadow:none;border:1px solid #aaa;break-inside:avoid}th{position:static;background:#eee;color:black}td,th{border-color:#bbb}.field input,.field select,.table-editor input{background:white;color:black;border:0}.status{border:1px solid #777;background:white;color:black}.kpis{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
-<header>
-  <h1>NAVETTES INTERSITES</h1>
-  <div class="toolbar no-print">
-    <span class="muted">Mode démonstration · stockage local</span>
-    <button class="grey" onclick="resetDemo()">Réinitialiser la démo</button>
-  </div>
-</header>
+<div class="topbar"><span class="brand-icon">🚚</span><span class="brand">NAVETTES INTERSITES</span><span class="top-spacer"></span><span>👤</span><span class="user-info" id="topUser">DÉMO Utilisateur<br>ID : local</span><span class="user-info" id="topDate">14/10/2026&nbsp; 14:32</span></div>
+<div class="app">
+<aside>
+<button class="active" data-page="dashboard" onclick="goDashboard()">⌂ &nbsp; Tableau de bord</button>
+<button data-type="transfert" onclick="openForm('transfert')">⬡ &nbsp; Produit transférable</button>
+<button data-type="retour" onclick="openForm('retour')">↶ &nbsp; Produit à faire revenir</button>
+<button data-type="preparee" onclick="openForm('preparee')">🚚 &nbsp; Navette préparée</button>
+<button data-type="expediee" onclick="openForm('expediee')">🚛 &nbsp; Navette expédiée</button>
+<button data-type="recue" onclick="openForm('recue')">⬡ &nbsp; Navette reçue</button>
+<div class="sep"></div><button onclick="openHistory()">◷ &nbsp; Historique</button>
+</aside>
 <main>
-  <nav class="navbar no-print">
-    <button class="blue" onclick="openForm('transfert')">Produit transférable</button>
-    <button class="blue" onclick="openForm('retour')">Produit à faire revenir</button>
-    <button class="blue" onclick="openForm('preparee')">Navette préparée</button>
-    <button class="blue" onclick="openForm('expediee')">Navette expédiée</button>
-    <button class="blue" onclick="openForm('recue')">Navette reçue</button>
-  </nav>
-
-  <section id="dashboard">
-    <div class="kpis">
-      <div class="kpi"><small>Navettes déchargées</small><strong id="kTotal">0</strong></div>
-      <div class="kpi"><small>Départ A → B</small><strong id="kAB">0</strong></div>
-      <div class="kpi"><small>Départ B → A</small><strong id="kBA">0</strong></div>
-      <div class="kpi"><small>À traiter</small><strong id="kPending">0</strong></div>
-    </div>
-    <div class="charts">
-      <div class="chart"><h3>Navettes déchargées par mois</h3><div id="monthly"></div></div>
-      <div class="chart"><h3>Départs par jour</h3><div id="weekdays"></div></div>
-      <div class="chart"><h3>Transporteurs</h3><div id="carriers"></div></div>
-    </div>
-    <div class="panel" style="margin-top:16px">
-      <h2>Recherche globale</h2>
-      <div class="filters no-print">
-        <div class="field"><label>Article</label><input id="searchArticle" placeholder="Numéro d'article"></div>
-        <div class="field"><label>Lot</label><input id="searchLot" placeholder="Numéro de lot"></div>
-        <div class="field"><label>Date</label><input id="searchDate" type="date"></div>
-        <button class="blue" onclick="searchAll()">Rechercher</button>
-        <button class="grey" onclick="clearSearch()">Effacer</button>
-      </div>
-      <div id="searchResults" class="tablewrap" style="margin-top:12px"></div>
-    </div>
-    <div class="panel">
-      <h2>Dernières navettes</h2>
-      <div id="recent" class="tablewrap"></div>
-    </div>
-  </section>
-
-  <section id="workspace" class="hidden">
-    <div class="panel">
-      <div class="toolbar no-print" style="justify-content:space-between">
-        <h2 id="formTitle">Formulaire</h2>
-        <button class="grey" onclick="showDashboard()">← Tableau de bord</button>
-      </div>
-      <div class="toolbar no-print">
-        <button class="grey" onclick="findRecord()">Rechercher</button>
-        <button class="blue" onclick="newRecord()">Créer</button>
-        <button class="orange" onclick="enableEdit()">Modifier</button>
-        <button class="red" onclick="cancelRecord()">Annuler</button>
-        <span id="recordBadge" class="status">Aucune fiche sélectionnée</span>
-      </div>
-      <div id="lookupBox" class="filters hidden no-print" style="margin-top:12px">
-        <div class="field"><label>Numéro de demande / navette / BL</label><input id="lookupId" placeholder="DP000001, RD00001, NAV000001…"></div>
-        <button class="blue" onclick="loadRecord()">Charger</button>
-      </div>
-      <div id="formNotice" class="notice hidden"></div>
-      <div id="formFields"></div>
-      <div id="lineArea"></div>
-      <div id="workflowArea"></div>
-      <div class="actions no-print" style="margin-top:16px">
-        <button id="addLineBtn" class="grey" onclick="addLine()">+ Ajouter une ligne</button>
-        <button id="pasteBtn" class="grey" onclick="pasteExcel()">Coller depuis Excel</button>
-        <button id="printBtn" class="grey" onclick="printRecord()" disabled>Imprimer</button>
-        <button id="validateBtn" class="green" onclick="validateRecord()">VALIDER</button>
-      </div>
-      <p class="muted no-print">Les modifications ne sont enregistrées qu'après validation. Démonstration locale : aucune donnée n'est envoyée.</p>
-    </div>
-    <div class="panel">
-      <h2>Historique des actions</h2>
-      <div id="history" class="tablewrap"></div>
-    </div>
-  </section>
-</main>
-<footer>Prototype de présentation · données fictives · aucune connexion SAP, aucun courriel envoyé</footer>
-
+<section id="dashboard">
+<h1 class="page-title">NAVETTES INTERSITES</h1>
+<div class="actionbar">
+<button class="blue" onclick="openForm('transfert')"><span class="ico">⬡</span> Produit transférable</button>
+<button class="orange" onclick="openForm('retour')"><span class="ico">↶</span> Produit à faire revenir</button>
+<button class="green" onclick="openForm('preparee')"><span class="ico">🚚</span> Navette préparée</button>
+<button class="purple" onclick="openForm('expediee')"><span class="ico">🚛</span> Navette expédiée</button>
+<button class="teal" onclick="openForm('recue')"><span class="ico">⬡</span> Navette reçue</button>
+</div>
+<div class="kpis">
+<div class="tile"><div class="tile-title">🚚 &nbsp; Total navettes</div><div class="big-number" id="kTotal">177</div><div class="sub">depuis le 01/01 de l'année</div></div>
+<div class="tile"><div class="tile-title"><span class="up">⬆</span> A vers B</div><div class="big-number" id="kAB">111</div><div class="sub" id="pctAB">63%</div></div>
+<div class="tile"><div class="tile-title"><span class="leftarrow">⬅</span> B vers A</div><div class="big-number" id="kBA">66</div><div class="sub" id="pctBA">37%</div></div>
+<div class="tile"><div class="tile-title">Navettes par jour de la semaine</div><div class="chartbox" id="weekdayChart"></div><div class="legend"><span><i class="dot" style="background:#1693ff"></i>Site A</span><span><i class="dot" style="background:#ff9b21"></i>Site B</span></div></div>
+<div class="tile"><div class="tile-title">Navettes par mois</div><div class="chartbox" id="monthChart"></div><div class="legend"><span><i class="dot" style="background:#1693ff"></i>Site A</span><span><i class="dot" style="background:#ff9b21"></i>Site B</span></div></div>
+<div class="tile"><div class="tile-title">Transporteurs</div><div class="donut-row"><div class="donut" id="carrierDonut"><span class="donut-label" id="donutTotal">177<br>navettes</span></div><div class="donut-list" id="carrierLegend"></div></div></div>
+<div class="tile"><div class="tile-title">Répartition sites</div><div class="donut-row"><div class="donut" id="siteDonut"><span class="donut-label" id="siteDonutTotal">177<br>navettes</span></div><div class="donut-list" id="siteLegend"></div></div></div>
+</div>
+<div class="searchline"><span>⌕</span><input id="globalSearch" placeholder="Rechercher un article, un lot ou une date…" onkeydown="if(event.key==='Enter')searchGlobal()"><button class="tiny blue" onclick="searchGlobal()">Rechercher</button><button class="tiny ghost" onclick="clearGlobal()">Effacer</button></div>
+<div class="panel"><div class="panel-head"><h2>Dernières navettes / demandes</h2><button class="tiny ghost" onclick="renderRecent(true)">Voir toutes les navettes →</button></div><div class="tablewrap" id="recentTable"></div></div>
+<div id="searchPanel" class="panel hidden"><div class="panel-head"><h2>Résultats de recherche</h2><button class="tiny ghost" onclick="document.getElementById('searchPanel').classList.add('hidden')">Fermer</button></div><div class="tablewrap" id="searchResults"></div></div>
+</section>
+<section id="workspace" class="hidden">
+<div class="panel">
+<div class="panel-head"><h2 id="formTitle">FORMULAIRE</h2><span id="formStatus" class="status grey">Nouvelle fiche</span></div>
+<div class="form-tools no-print">
+<button class="ghost" onclick="showLookup()">⌕ Rechercher</button><button class="blue" onclick="createNew()">＋ Créer</button><button class="orange" onclick="editCurrent()">✎ Modifier</button><button class="red" onclick="cancelCurrent()">✕ Annuler</button><span class="spacer"></span><button class="ghost" onclick="goDashboard()">← Tableau de bord</button>
+</div>
+<div id="lookup" class="fieldgrid hidden no-print"><div class="field wide"><label>Numéro de demande, navette ou BL</label><input id="lookupId" placeholder="DP000001 / RD00001 / NAV000001 / BL…"></div><div class="field" style="align-self:end"><button class="blue" onclick="loadById()">Charger la fiche</button></div></div>
+<div id="notice" class="note hidden"></div>
+<div id="formMeta"></div><div id="lineEditor"></div><div id="workflow"></div>
+<div class="form-tools no-print" style="margin-top:12px">
+<button class="ghost" id="addLine" onclick="addLine()">＋ Ajouter une ligne</button><button class="ghost" id="pasteLines" onclick="pasteLines()">Coller depuis Excel</button><button class="ghost" onclick="exportCurrent()">Exporter CSV</button><span class="spacer"></span><button class="ghost" id="printBtn" onclick="printCurrent()" disabled>▣ Imprimer</button><button class="green" id="validateBtn" onclick="validateCurrent()">VALIDER</button>
+</div>
+</div>
+<div class="panel"><div class="panel-head"><h2>Historique de la fiche</h2><button class="tiny ghost" onclick="openHistory()">Historique complet</button></div><div id="recordHistory" class="history"></div></div>
+</section>
+<section id="historyPage" class="hidden">
+<div class="panel"><div class="panel-head"><h2>HISTORIQUE DES ACTIONS</h2><button class="ghost" onclick="goDashboard()">← Tableau de bord</button></div><div class="fieldgrid no-print"><div class="field"><label>Référence</label><input id="histFilter" placeholder="NAV, DP, RD…" oninput="renderHistoryPage()"></div><div class="field"><label>Action</label><select id="histAction" onchange="renderHistoryPage()"><option value="">Toutes</option><option>Création</option><option>Modification</option><option>Annulation</option><option>Expédition</option><option>Réception</option><option>Génération BL</option></select></div><div class="field"><label>Utilisateur de démonstration</label><input id="operatorName" placeholder="Prénom Nom" onchange="setOperator(this.value)"></div><div class="field" style="align-self:end"><button class="ghost" onclick="exportBackup()">Exporter la sauvegarde JSON</button></div></div><div class="tablewrap" id="allHistory"></div></div>
+</section>
+<div class="footer">Prototype de présentation · données locales au navigateur · aucune connexion SAP, aucun courriel envoyé</div>
+</main></div>
+<div id="modal" class="modal hidden"><div class="modal-card"><div class="panel-head"><h2 id="modalTitle">Confirmation</h2><button class="ghost" onclick="closeModal()">✕</button></div><div id="modalBody"></div><div class="form-tools" style="margin-top:15px" id="modalActions"></div></div></div>
+<div id="toast" class="toast hidden"></div>
 <script>
-const KEY='navettes_intersites_demo_v1';
-const shuttleCols=['DATE','DESIGNATION','LOT','NB cart','PAL','ARTICLE','N° US','OBJET','QUANTITE','UNITE','NET','BRUTE','ONU','CLASSE','depuis','vers','transporteur'];
-const productCols=['Article','Magasin','Lot','bloqué ?','Désignation article','Numéro de magasin','Stock disponible','Unité','Date EM','Date Fab','Quantité A transférer'];
-const types={
- transfert:{title:'Produit transférable',prefix:'DP',digits:6,cols:productCols,kind:'demande'},
- retour:{title:'Produit à faire revenir',prefix:'RD',digits:5,cols:['Article','Désignation article','Lot','Quantité','Unité','Site de départ','Site de retour souhaité','Date de retour souhaitée','Urgence','Commentaire'],kind:'demande'},
- preparee:{title:'Navette préparée',prefix:'NAV',digits:6,cols:shuttleCols,kind:'navette'},
- expediee:{title:'Navette expédiée',prefix:'NAV',digits:6,cols:shuttleCols,kind:'navette'},
- recue:{title:'Navette reçue',prefix:'NAV',digits:6,cols:shuttleCols,kind:'navette'}
+const STORE='navettes_inter_sites_demo_v3';
+const SHUTTLE_COLS=['DATE','DESIGNATION','LOT','NB cart','PAL','ARTICLE','N° US','OBJET','QUANTITE','UNITE','NET','BRUTE','ONU','CLASSE','depuis','vers','transporteur'];
+const PRODUCT_COLS=['Article','Magasin','Lot','bloqué ?','Désignation article','Numéro de magasin','Stock disponible','Unité','Date EM','Date Fab','Quantité A transférer'];
+const CONFIG={
+ transfert:{title:'PRODUIT TRANSFÉRABLE',prefix:'DP',digits:6,cols:PRODUCT_COLS},
+ retour:{title:'PRODUIT À FAIRE REVENIR',prefix:'RD',digits:5,cols:['Article','Désignation article','Lot','Quantité','Unité','Site de départ','Site de retour souhaité','Date de retour souhaitée','Urgence','Commentaire']},
+ preparee:{title:'NAVETTE PRÉPARÉE',prefix:'NAV',digits:6,cols:SHUTTLE_COLS},
+ expediee:{title:'NAVETTE EXPÉDIÉE',prefix:'NAV',digits:6,cols:SHUTTLE_COLS},
+ recue:{title:'NAVETTE REÇUE',prefix:'NAV',digits:6,cols:SHUTTLE_COLS}
 };
-let db,mode='transfert',currentId=null,editing=false,working=null,validated=false;
-function iso(d=new Date()){return d.toISOString().slice(0,10)}
-function dateOffset(n){let d=new Date();d.setDate(d.getDate()+n);return iso(d)}
-function blankLines(cols,n=1){return Array.from({length:n},()=>Object.fromEntries(cols.map(c=>[c,''])))}
-function seed(){
- const lines1=[
- ['2026-10-12','Résine industrielle','LOT26091','12','2','10004521','US001','Transfert matière','500','KG','500','520','3082','3','A','B','TransLog'],
- ['2026-10-12','Additif technique','LOT26088','4','1','10006732','US002','Transfert matière','120','KG','120','128','','','A','B','TransLog']
+let db,view='dashboard',kind='transfert',activeId=null,draft=null,editing=false,hasValidated=false,showAllRecent=false;
+function today(){return new Date().toISOString().slice(0,10)}
+function offsetDate(n){let d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function emptyRows(cols,n=2){return Array.from({length:n},()=>Object.fromEntries(cols.map(c=>[c,''])))}
+function sample(){
+ let y=new Date().getFullYear(), month=String(new Date().getMonth()+1).padStart(2,'0');
+ const line=(date,designation,lot,cart,pal,article,us,obj,q,unit,net,gross,onu,classe,from,to,carrier)=>({DATE:date,DESIGNATION:designation,LOT:lot,'NB cart':cart,PAL:pal,ARTICLE:article,'N° US':us,OBJET:obj,QUANTITE:q,UNITE:unit,NET:net,BRUTE:gross,ONU:onu,CLASSE:classe,depuis:from,vers:to,transporteur:carrier});
+ let records=[
+ {id:'DP000001',type:'transfert',status:'Validée',created:today(),updated:today(),lines:[
+ {Article:'10004521',Magasin:'001',Lot:'LOT26091','bloqué ?':'Non','Désignation article':'Résine industrielle','Numéro de magasin':'MAG-A01','Stock disponible':'1200',Unité:'KG','Date EM':today(),'Date Fab':'2026-08-01','Quantité A transférer':'500'},
+ {Article:'10006732',Magasin:'001',Lot:'LOT26088','bloqué ?':'Non','Désignation article':'Additif technique','Numéro de magasin':'MAG-A02','Stock disponible':'350',Unité:'KG','Date EM':today(),'Date Fab':'2026-07-20','Quantité A transférer':'120'}]},
+ {id:'RD00001',type:'retour',status:'Validée',created:today(),updated:today(),lines:[{Article:'10007865','Désignation article':'Solvant technique',Lot:'LOT26072',Quantité:'200',Unité:'KG','Site de départ':'B','Site de retour souhaité':'A','Date de retour souhaitée':offsetDate(5),Urgence:'Urgent',Commentaire:'Retour de stock'}]},
+ {id:'NAV000001',type:'preparee',status:'Livrée',created:today(),updated:today(),depart:offsetDate(-4),bl:'BL'+today().replaceAll('-','').slice(2)+'001',received:true,sap:true,receivedDate:offsetDate(-4),lines:[line(offsetDate(-4),'Résine industrielle','LOT26091','12','2','10004521','US001','Transfert matière','500','KG','500','520','3082','3','A','B','TransLog'),line(offsetDate(-4),'Additif technique','LOT26088','4','1','10006732','US002','Transfert matière','120','KG','120','128','','','A','B','TransLog')]},
+ {id:'NAV000002',type:'preparee',status:'Livrée',created:today(),updated:today(),depart:offsetDate(-2),bl:'BL'+today().replaceAll('-','').slice(2)+'002',received:true,sap:true,receivedDate:offsetDate(-2),lines:[line(offsetDate(-2),'Solvant technique','LOT26072','8','1','10007865','US011','Transfert retour','200','KG','200','215','1993','3','B','A','RapidFret')]},
+ {id:'NAV000003',type:'preparee',status:'Préparée',created:today(),updated:today(),depart:offsetDate(1),bl:'',received:false,sap:false,lines:[line(offsetDate(1),'Produit intermédiaire','LOT26099','10','2','10008765','US021','Navette prévue','400','KG','400','420','3082','3','A','B','TransLog'),line(offsetDate(1),'Matière première','LOT26101','5','1','10009211','US022','Navette prévue','150','KG','150','160','','','A','B','TransLog')]}
  ];
- const lines2=[
- ['2026-10-13','Solvant technique','LOT26072','8','1','10007865','US011','Transfert retour','200','KG','200','215','1993','3','B','A','RapidFret']
- ];
- const lines3=[
- ['2026-10-14','Produit intermédiaire','LOT26099','10','2','10008765','US021','Navette prévue','400','KG','400','420','3082','3','A','B','TransLog'],
- ['2026-10-14','Matière première','LOT26101','5','1','10009211','US022','Navette prévue','150','KG','150','160','','','A','B','TransLog']
- ];
- const mk=(id,type,lines,status,extra={})=>({id,type,lines:lines.map(a=>Object.fromEntries(types[type].cols.map((c,i)=>[c,a[i]||'']))),status,created:iso(),updated:iso(),...extra});
- return {
- records:[
- mk('DP000001','transfert',[['10004521','001','LOT26091','Non','Résine industrielle','MAG-A01','1200','KG','2026-10-10','2026-08-01','500'],['10006732','001','LOT26088','Non','Additif technique','MAG-A02','350','KG','2026-10-11','2026-07-20','120']],'Validée'),
- mk('RD00001','retour',[['10007865','Solvant technique','LOT26072','200','KG','B','A','2026-10-20','Urgent','Retour de stock']],'Validée'),
- mk('NAV000001','preparee',lines1,'Livrée',{bl:'BL261012001',depart:'2026-10-12',received:true,sap:true}),
- mk('NAV000002','preparee',lines2,'Livrée',{bl:'BL261013001',depart:'2026-10-13',received:true,sap:true}),
- mk('NAV000003','preparee',lines3,'Préparée',{bl:'',depart:'2026-10-14',received:false,sap:false})
- ],
- history:[{date:iso(),user:'Démo',action:'Initialisation',id:'-',detail:'Chargement des données fictives'}],
- counters:{DP:1,RD:1,NAV:3,BL:2}
- };
-}
-function loadDB(){try{let s=localStorage.getItem(KEY);db=s?JSON.parse(s):seed()}catch(e){db=seed()}saveDB()}
-function saveDB(){localStorage.setItem(KEY,JSON.stringify(db))}
-function log(action,id,detail){db.history.unshift({date:new Date().toLocaleString('fr-FR'),user:localStorage.getItem('demoUser')||'Utilisateur démo',action,id,detail});saveDB()}
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function record(id){return db.records.find(r=>r.id===id)}
-function alloc(prefix,digits){db.counters[prefix]=(db.counters[prefix]||0)+1;return prefix+String(db.counters[prefix]).padStart(digits,'0')}
-function userName(){let n=prompt('Prénom et nom de l’opérateur :',localStorage.getItem('demoUser')||'Utilisateur Démo');if(n===null)return false;localStorage.setItem('demoUser',n.trim()||'Utilisateur Démo');return true}
-function openForm(type){mode=type;currentId=null;editing=false;validated=false;working=null;document.getElementById('dashboard').classList.add('hidden');document.getElementById('workspace').classList.remove('hidden');document.getElementById('formTitle').textContent=types[type].title;document.getElementById('lookupBox').classList.add('hidden');renderForm();renderHistory();setNotice('Choisis Créer pour saisir une nouvelle fiche, ou Rechercher pour retrouver une fiche existante.');}
-function showDashboard(){document.getElementById('workspace').classList.add('hidden');document.getElementById('dashboard').classList.remove('hidden');refreshDashboard()}
-function setNotice(s){let el=document.getElementById('formNotice');el.textContent=s;el.classList.remove('hidden')}
-function clearNotice(){document.getElementById('formNotice').classList.add('hidden')}
-function renderForm(){
- const t=types[mode];let fields='';
- if(mode==='preparee'){
- fields=`<div class="formgrid">
- <div class="field"><label>Date prévue de la navette *</label><input id="plannedDate" type="date" value="${esc(working?.depart||dateOffset(1))}" ${editing?'':'disabled'}></div>
- <div class="field"><label>Transporteur prévu</label><select id="plannedCarrier" ${editing?'':'disabled'}><option>TransLog</option><option>RapidFret</option><option>Autre transporteur</option></select></div>
- <div class="field"><label>Site de départ</label><select id="fromSite" ${editing?'':'disabled'}><option>A</option><option>B</option></select></div>
- <div class="field"><label>Site de destination</label><select id="toSite" ${editing?'':'disabled'}><option>B</option><option>A</option></select></div></div>`;
- }else if(mode==='retour'){
- fields=`<div class="formgrid"><div class="field"><label>Urgence obligatoire *</label><select id="urgency" ${editing?'':'disabled'}><option value="">Choisir…</option><option>Très urgent</option><option>Urgent</option><option>Classique</option></select></div></div>`;
+ // Créer un historique annuel fictif pour que le tableau de bord de présentation ait un aspect réaliste.
+ let completed=[];
+ for(let i=0;i<177;i++){
+  let d=new Date(y,Math.floor(i/15)%12,1+(i*7)%26);let ds=d.toISOString().slice(0,10);let ab=i<111,carrier=i%10<7?'TransLog':i%10<9?'RapidFret':'Transporteur 3';
+  completed.push({id:'NAV-DEMO-'+String(i+1).padStart(3,'0'),type:'preparee',status:'Livrée',created:ds,updated:ds,depart:ds,receivedDate:ds,bl:'BL-DEMO-'+String(i+1).padStart(3,'0'),received:true,sap:true,seedDemo:true,lines:[line(ds,'Produit de démonstration','LOT'+String(26000+i),String(2+i%10),String(1+i%3),'1000'+String(100+i),'US'+String(i+1).padStart(3,'0'),'Navette de démonstration',String(80+i%400),'KG',String(80+i%400),String(90+i%420),i%4===0?'3082':'',i%4===0?'3':'',ab?'A':'B',ab?'B':'A',carrier)]});
  }
- document.getElementById('formFields').innerHTML=fields;
- document.getElementById('lineArea').innerHTML=tableEditor();
- document.getElementById('workflowArea').innerHTML=workflowEditor();
- document.getElementById('addLineBtn').disabled=!editing;
- document.getElementById('pasteBtn').disabled=!editing;
- document.getElementById('validateBtn').disabled=!editing;
- document.getElementById('printBtn').disabled=!validated;
- document.getElementById('recordBadge').textContent=currentId?(currentId+' · '+(record(currentId)?.status||'Nouveau')):'Nouvelle fiche';
- if(working)populateForm();
+ const all=[...completed,...records];
+ return {records:all,history:[{date:new Date().toLocaleString('fr-FR'),user:'Démo',action:'Initialisation',id:'-',detail:'Chargement de données fictives de démonstration'}],counters:{DP:1,RD:1,NAV:3,BL:2}};
 }
-function tableEditor(){
- let cols=types[mode].cols;
- let rows=working?.lines||blankLines(cols,2);
- let html='<div class="tablewrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead><tbody>';
- rows.forEach((line,i)=>{html+='<tr>'+cols.map((c,j)=>{
- let val=line[c]||'';
- if(c==='Urgence')return `<td><select data-row="${i}" data-col="${esc(c)}" ${editing?'':'disabled'}><option></option>${['Très urgent','Urgent','Classique'].map(v=>`<option ${val===v?'selected':''}>${v}</option>`).join('')}</select></td>`;
- return `<td><input data-row="${i}" data-col="${esc(c)}" value="${esc(val)}" ${editing?'':'disabled'} aria-label="${esc(c)} ligne ${i+1}"></td>`;
- }).join('')+'</tr>'});
- return html+'</tbody></table></div>';
+function save(){try{localStorage.setItem(STORE,JSON.stringify(db))}catch(e){toast('Stockage local saturé : exporte tes données et supprime quelques fiches.');}}
+function init(){try{let s=localStorage.getItem(STORE);db=s?JSON.parse(s):sample()}catch(e){db=sample()}if(!db.records)db=sample();save();setTopDate();renderDashboard()}
+function setTopDate(){let d=new Date();document.getElementById('topDate').textContent=d.toLocaleDateString('fr-FR')+'  '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});document.getElementById('topUser').innerHTML=safe(localStorage.getItem('navetteUser')||'DÉMO Utilisateur')+'<br>ID : local'}
+function operator(){let n=localStorage.getItem('navetteUser');if(n)return n;let v=prompt('Prénom et nom (démonstration uniquement) :','DUPONT Marie');if(v===null)return null;v=v.trim()||'Utilisateur démo';localStorage.setItem('navetteUser',v);setTopDate();return v}
+function log(action,id,detail){db.history.unshift({date:new Date().toLocaleString('fr-FR'),user:localStorage.getItem('navetteUser')||'DÉMO Utilisateur',action,id,detail});save()}
+function toast(s){let t=document.getElementById('toast');t.textContent=s;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),3000)}
+function get(id){return db.records.find(r=>r.id===id)}
+function allocate(prefix,digits){db.counters[prefix]=(db.counters[prefix]||0)+1;return prefix+String(db.counters[prefix]).padStart(digits,'0')}
+function setActiveNav(){document.querySelectorAll('aside button').forEach(b=>b.classList.toggle('active',(view==='dashboard'&&b.dataset.page==='dashboard')||(view==='workspace'&&b.dataset.type===kind)))}
+function goDashboard(){view='dashboard';document.getElementById('dashboard').classList.remove('hidden');document.getElementById('workspace').classList.add('hidden');document.getElementById('historyPage').classList.add('hidden');setActiveNav();renderDashboard()}
+function openForm(t){kind=t;activeId=null;draft=null;editing=false;hasValidated=false;view='workspace';document.getElementById('dashboard').classList.add('hidden');document.getElementById('historyPage').classList.add('hidden');document.getElementById('workspace').classList.remove('hidden');document.getElementById('formTitle').textContent=CONFIG[t].title;document.getElementById('lookup').classList.add('hidden');document.getElementById('notice').classList.add('hidden');setActiveNav();renderForm();renderRecordHistory()}
+function notice(s){let n=document.getElementById('notice');n.textContent=s;n.classList.remove('hidden')}
+function showLookup(){document.getElementById('lookup').classList.remove('hidden');document.getElementById('lookupId').focus()}
+function loadById(){let id=document.getElementById('lookupId').value.trim().toUpperCase();let r=get(id)||db.records.find(x=>x.bl===id);if(!r){notice('Aucune fiche trouvée : '+id);return}if(['transfert','retour'].includes(kind)&&r.type!==kind){notice('Cette référence appartient à un autre type de fiche.');return}activeId=r.id;draft=JSON.parse(JSON.stringify(r));kind=r.type;editing=false;hasValidated=!['Brouillon','À charger'].includes(r.status);document.getElementById('formTitle').textContent=CONFIG[kind].title;document.getElementById('lookup').classList.add('hidden');renderForm();renderRecordHistory();notice('Fiche '+r.id+' chargée · statut : '+r.status)}
+function createNew(){let u=operator();if(!u)return;draft={id:allocate(CONFIG[kind].prefix,CONFIG[kind].digits),type:kind,status:'Brouillon',created:today(),updated:today(),depart:offsetDate(1),bl:'',lines:emptyRows(CONFIG[kind].cols,3),received:false,sap:false};activeId=null;editing=true;hasValidated=false;renderForm();notice('Nouvelle fiche '+draft.id+' : complète les lignes puis clique sur VALIDER.')}
+function editCurrent(){if(!draft||!activeId){notice('Recherche ou crée une fiche avant de la modifier.');return}if(['Livrée','Annulée'].includes(draft.status)){notice('Fiche verrouillée : elle est livrée ou annulée.');return}if(!operator())return;editing=true;hasValidated=false;renderForm();notice('Mode modification. Les changements seront enregistrés après validation.')}
+function cancelCurrent(){if(!draft||!activeId){notice('Recherche une fiche à annuler.');return}if(['Livrée','Annulée'].includes(draft.status)){notice('Cette fiche ne peut plus être annulée.');return}if(!confirm('Marquer '+activeId+' comme annulée ? Il faudra ensuite valider.'))return;if(!operator())return;draft.status='Annulée';editing=true;hasValidated=false;renderForm();notice('Annulation en attente. Clique sur VALIDER pour confirmer.')}
+function fieldInput(c,v,row){let dis=editing?'':'disabled';if(c==='Urgence')return `<select data-row="${row}" data-col="${safe(c)}" ${dis}><option value="">Choisir…</option>${['Très urgent','Urgent','Classique'].map(x=>`<option ${x===v?'selected':''}>${x}</option>`).join('')}</select>`;if(c==='bloqué ?')return `<select data-row="${row}" data-col="${safe(c)}" ${dis}><option></option>${['Non','Oui'].map(x=>`<option ${x===v?'selected':''}>${x}</option>`).join('')}</select>`;return `<input data-row="${row}" data-col="${safe(c)}" value="${safe(v)}" ${dis} aria-label="${safe(c)} ligne ${row+1}">`}
+function renderForm(){
+ const c=CONFIG[kind],lines=draft?.lines||emptyRows(c.cols,3);
+ let meta='';
+ if(kind==='preparee'){
+  meta=`<div class="fieldgrid"><div class="field"><label>Numéro de navette</label><input value="${safe(draft?.id||'Attribué à la création')}" disabled></div><div class="field"><label>Date prévue de la navette *</label><input id="plannedDate" type="date" value="${safe(draft?.depart||offsetDate(1))}" ${editing?'':'disabled'}></div><div class="field"><label>Transporteur prévu</label><select id="plannedCarrier" ${editing?'':'disabled'}>${['TransLog','RapidFret','Transporteur 3','Autre transporteur'].map(x=>`<option ${x===(lines[0]?.transporteur||'TransLog')?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Trajet</label><div style="display:flex;gap:5px"><select id="fromSite" ${editing?'':'disabled'}>${['A','B'].map(x=>`<option ${x===(lines[0]?.depuis||'A')?'selected':''}>${x}</option>`).join('')}</select><select id="toSite" ${editing?'':'disabled'}>${['B','A'].map(x=>`<option ${x===(lines[0]?.vers||'B')?'selected':''}>${x}</option>`).join('')}</select></div></div></div>`;
+ }else if(kind==='retour'){
+  meta=`<div class="fieldgrid"><div class="field"><label>Numéro de demande</label><input value="${safe(draft?.id||'Attribué à la création')}" disabled></div><div class="field"><label>Urgence obligatoire *</label><select id="urgency" ${editing?'':'disabled'}><option value="">Choisir…</option>${['Très urgent','Urgent','Classique'].map(x=>`<option ${x===(lines[0]?.Urgence||'')?'selected':''}>${x}</option>`).join('')}</select></div></div>`;
+ }else{
+  meta=`<div class="fieldgrid"><div class="field"><label>Numéro</label><input value="${safe(draft?.id||'Attribué à la création')}" disabled></div><div class="field"><label>Statut</label><input value="${safe(draft?.status||'Nouvelle fiche')}" disabled></div>${draft?.bl?`<div class="field"><label>Bon de livraison</label><input value="${safe(draft.bl)}" disabled></div>`:''}</div>`;
+ }
+ document.getElementById('formMeta').innerHTML=meta;
+ let table='<div class="tablewrap table-editor"><table><thead><tr>'+c.cols.map(x=>`<th>${safe(x)}</th>`).join('')+'</tr></thead><tbody>';
+ lines.forEach((l,i)=>{table+='<tr>'+c.cols.map(col=>`<td>${fieldInput(col,l[col]||'',i)}</td>`).join('')+'</tr>'});table+='</tbody></table></div>';
+ document.getElementById('lineEditor').innerHTML=table;
+ document.getElementById('workflow').innerHTML=renderWorkflow();
+ document.getElementById('formStatus').textContent=draft?(draft.id+' · '+draft.status):'Nouvelle fiche';
+ document.getElementById('formStatus').className='status '+(draft?.status==='Livrée'?'green':draft?.status==='Annulée'?'red':draft?.status==='Préparée'?'orange':'');
+ document.getElementById('addLine').disabled=!editing;document.getElementById('pasteLines').disabled=!editing;document.getElementById('validateBtn').disabled=!editing;document.getElementById('printBtn').disabled=!hasValidated;
 }
-function workflowEditor(){
- if(!currentId||!working)return '';
- if(mode==='preparee')return `<div class="panel"><h3>Cycle de la navette</h3><p>Statut : <span class="status">${esc(working.status)}</span> ${working.bl?'· BL : '+esc(working.bl):''}</p><div class="actions no-print">${working.status==='Préparée'?'<button class="orange" onclick="toLoad()">Navette à charger</button>':''}${working.status==='À charger'?'<button class="orange" onclick="toLoad()">Navette à charger</button>':''}${working.status==='Chargée'?'<button class="blue" onclick="markDispatched()">Confirmer expédition</button>':''}${working.status==='Expédiée'?'<button class="green" onclick="openReceipt()">Réceptionner la navette</button>':''}${working.status==='En réception'?'<button class="green" onclick="openReceipt()">Continuer réception</button>':''}</div></div>`;
- if(mode==='expediee')return `<div class="formgrid"><div class="field"><label>Numéro NAV *</label><input id="dispatchNav" value="${esc(working.id)}"></div><div class="field"><label>Numéro BL *</label><input id="dispatchBL" value="${esc(working.bl||'')}"></div></div><button class="blue no-print" onclick="markDispatched()">Confirmer le départ</button>`;
- if(mode==='recue')return `<div class="formgrid"><div class="field"><label>Numéro BL *</label><input id="receiptBL" value="${esc(working.bl||'')}"></div><div class="field"><label>Rangement dans le bon emplacement SAP effectué ?</label><select id="sapDone"><option value="">Choisir…</option><option value="yes">Oui</option><option value="no">Non</option></select></div></div><div id="receivedLines"></div><button class="green no-print" onclick="completeReceipt()">Valider la réception</button>`;
+function renderWorkflow(){
+ if(!draft||!activeId)return '';
+ if(kind==='preparee'){
+ let buttons='';
+ if(['Préparée','Validée'].includes(draft.status))buttons='<button class="orange" onclick="markReady()">Navette à charger</button>';
+ if(draft.status==='À charger')buttons='<button class="purple" onclick="confirmLoaded()">Confirmer chargement</button>';
+ if(draft.status==='Chargée')buttons='<button class="blue" onclick="markDispatched()">Confirmer expédition</button>';
+ if(draft.status==='Expédiée')buttons='<button class="teal" onclick="startReceipt()">Réceptionner la navette</button>';
+ if(draft.status==='Régularisation requise')buttons='<button class="teal" onclick="startReceipt()">Reprendre la réception</button>';
+ return `<div class="panel" style="margin-top:10px"><div class="panel-head"><h2>Cycle de la navette</h2><span class="badge">${safe(draft.status)}</span></div><p class="muted">BL associé : ${safe(draft.bl||'Non généré')}</p><div class="form-tools no-print">${buttons}${draft.bl?'<button class="ghost" onclick="printBL()">Imprimer le BL</button>':''}</div></div>`;
+ }
+ if(kind==='expediee')return `<div class="fieldgrid"><div class="field"><label>Numéro NAV *</label><input id="dispatchNav" value="${safe(draft.id)}"></div><div class="field"><label>Numéro BL *</label><input id="dispatchBL" value="${safe(draft.bl||'')}"></div><div class="field" style="align-self:end"><button class="blue" onclick="markDispatched()">Confirmer le départ</button></div></div>`;
+ if(kind==='recue')return `<div class="fieldgrid"><div class="field"><label>Numéro BL *</label><input id="receiptBL" value="${safe(draft.bl||'')}"></div><div class="field"><label>Rangement SAP effectué ?</label><select id="sapDone"><option value="">Choisir…</option><option value="yes">Oui</option><option value="no">Non</option></select></div></div><div id="receiptLines"></div><button class="green no-print" onclick="completeReceipt()">Valider la réception</button>`;
  return '';
 }
-function populateForm(){
- if(mode==='preparee'){
- document.getElementById('plannedDate').value=working.depart||dateOffset(1);
- document.getElementById('plannedCarrier').value=working.lines?.[0]?.transporteur||'TransLog';
- document.getElementById('fromSite').value=working.lines?.[0]?.depuis||'A';
- document.getElementById('toSite').value=working.lines?.[0]?.vers||'B';
- }
- if(mode==='retour')document.getElementById('urgency').value=working.lines?.[0]?.Urgence||'';
+function collectLines(){return [...document.querySelectorAll('#lineEditor tbody tr')].map(tr=>{let o={};tr.querySelectorAll('[data-col]').forEach(e=>o[e.dataset.col]=e.value.trim());return o}).filter(o=>Object.values(o).some(v=>v!==''))}
+function addLine(){if(!editing)return;let rows=collectLines();if(rows.length>=30){alert('Maximum 30 lignes par fiche.');return}draft.lines=rows.concat(emptyRows(CONFIG[kind].cols,1));renderForm()}
+function pasteLines(){if(!editing)return;let raw=prompt('Colle les lignes copiées depuis Excel. Les colonnes doivent suivre exactement l’ordre du tableau.');if(raw===null||!raw.trim())return;let cols=CONFIG[kind].cols,lines=collectLines().concat(raw.trim().split(/\r?\n/).map(row=>{let o={},a=row.split('\t');cols.forEach((c,i)=>o[c]=(a[i]||'').trim());return o}).filter(o=>Object.values(o).some(v=>v)));if(lines.length>30)alert('Limite de 30 lignes : les lignes supplémentaires seront ignorées.');draft.lines=lines.slice(0,30);while(draft.lines.length<2)draft.lines.push(...emptyRows(cols,1));renderForm();notice('Collage effectué. Vérifie les lignes avant validation.')}
+function validateCurrent(){
+ if(!editing||!draft){notice('Clique sur Créer ou Modifier avant de valider.');return}
+ let lines=collectLines();if(!lines.length){alert('Ajoute au moins une ligne.');return}
+ let articleKey=kind==='transfert'?'Article':'ARTICLE',qtyKeys=kind==='transfert'?['Quantité A transférer']:kind==='retour'?['Quantité']:['QUANTITE'];
+ for(let l of lines){if(!(l[articleKey]||l.Article||l.ARTICLE)){alert('Article est obligatoire pour chaque ligne renseignée.');return}if(!qtyKeys.some(k=>l[k])){alert('Quantité est obligatoire pour chaque ligne renseignée.');return}}
+ if(kind==='retour'&&!document.getElementById('urgency').value){alert('Le choix de l’urgence est obligatoire.');return}
+ if(kind==='preparee'){let d=document.getElementById('plannedDate').value;if(!d){alert('La date prévue est obligatoire.');return}let carrier=document.getElementById('plannedCarrier').value,from=document.getElementById('fromSite').value,to=document.getElementById('toSite').value;if(from===to){alert('Le départ et la destination doivent être différents.');return}draft.depart=d;lines=lines.map(l=>({...l,DATE:d,transporteur:carrier,depuis:from,vers:to}))}
+ if(kind==='retour'){let urgency=document.getElementById('urgency').value;lines=lines.map(l=>({...l,Urgence:urgency}))}
+ let prior=activeId?get(activeId):null;draft.lines=lines;draft.updated=today();if(draft.status==='Brouillon')draft.status=kind==='preparee'?'Préparée':'Validée';
+ if(prior){draft.created=prior.created;db.records=db.records.map(r=>r.id===draft.id?JSON.parse(JSON.stringify(draft)):r);log('Modification',draft.id,'Fiche modifiée ; anciennes valeurs conservées dans la sauvegarde locale.')}else{db.records.push(JSON.parse(JSON.stringify(draft)));activeId=draft.id;log('Création',draft.id,'Nouvelle fiche créée')}
+ save();editing=false;hasValidated=true;renderForm();renderRecordHistory();renderDashboard();notice('Validation réussie pour '+draft.id+'.');toast('Fiche enregistrée : '+draft.id);
+ if(confirm('Enregistrement réussi. Imprimer la fiche maintenant ?'))printCurrent();
 }
-function collectLines(){
- let cols=types[mode].cols, rows=[...document.querySelectorAll('#lineArea tbody tr')];
- return rows.map((tr)=>{let obj={};tr.querySelectorAll('[data-col]').forEach(el=>obj[el.dataset.col]=el.value.trim());return obj}).filter(r=>Object.values(r).some(v=>v!==''));
+function blFor(r){let date=(r.depart||today()).replaceAll('-','').slice(2);let seq=db.records.filter(x=>(x.bl||'').startsWith('BL'+date)).length+1;return 'BL'+date+String(seq).padStart(3,'0')}
+function markReady(){
+ if(!draft||!activeId)return;
+ if(!confirm('La préparation a-t-elle été modifiée ? OK = Oui, retourner en modification. Annuler = Non, générer le BL.')){if(!operator())return;draft.bl=draft.bl||blFor(draft);draft.status='À charger';draft.updated=today();db.records=db.records.map(r=>r.id===draft.id?JSON.parse(JSON.stringify(draft)):r);log('Génération BL',draft.id,'BL '+draft.bl+' généré (simulation)');save();hasValidated=true;renderForm();renderDashboard();renderRecordHistory();notice('BL '+draft.bl+' généré. Tu peux l’imprimer ou confirmer le chargement.');if(confirm('Imprimer le bon de livraison '+draft.bl+' ?'))printBL()}else editCurrent()
 }
-function newRecord(){
- if(!userName())return;
- currentId=null;validated=false;editing=true;
- working={id:alloc(types[mode].prefix,types[mode].digits),type:mode,lines:blankLines(types[mode].cols,2),status:'Brouillon',created:iso(),updated:iso(),depart:dateOffset(1),bl:'',received:false,sap:false};
- renderForm();setNotice('Nouvelle fiche '+working.id+'. Complète les lignes puis clique sur VALIDER.');renderHistory();
-}
-function enableEdit(){
- if(!currentId||!working){setNotice('Recherche une fiche avant de la modifier.');return}
- if(working.status==='Livrée'||working.status==='Annulée'){setNotice('Cette fiche est verrouillée et ne peut plus être modifiée.');return}
- if(!userName())return;
- editing=true;validated=false;renderForm();setNotice('Mode modification. Les changements seront enregistrés après validation.');
-}
-function findRecord(){document.getElementById('lookupBox').classList.remove('hidden');document.getElementById('lookupId').focus()}
-function loadRecord(){
- let id=document.getElementById('lookupId').value.trim().toUpperCase();
- let r=record(id);
- if(!r&&id.startsWith('BL'))r=db.records.find(x=>x.bl===id);
- if(!r){setNotice('Aucune fiche trouvée pour '+id+'.');return}
- if(mode==='transfert'||mode==='retour'){if(r.type!==mode){setNotice('Cette référence correspond à un autre type de fiche.');return}}
- currentId=r.id;working=JSON.parse(JSON.stringify(r));mode=r.type;editing=false;validated=!['Brouillon','À charger'].includes(r.status);
- document.getElementById('formTitle').textContent=types[mode].title;document.getElementById('lookupBox').classList.add('hidden');
- renderForm();renderHistory();setNotice('Fiche '+r.id+' chargée. Statut : '+r.status+'.');document.getElementById('recordBadge').textContent=r.id+' · '+r.status;
-}
-function cancelRecord(){
- if(!currentId||!working){setNotice('Recherche une fiche à annuler.');return}
- if(working.status==='Livrée'||working.status==='Annulée'){setNotice('Cette fiche est déjà livrée ou annulée et ne peut pas être annulée.');return}
- if(!confirm('Confirmer l’annulation de '+currentId+' ? Clique ensuite sur VALIDER pour enregistrer.'))return;
- if(!userName())return;
- working.status='Annulée';editing=true;validated=false;renderForm();setNotice('Annulation en attente. Clique sur VALIDER pour confirmer.');
-}
-function addLine(){if(!editing)return;let lines=collectLines();if(lines.length>=30){alert('Maximum 30 lignes par demande.');return}working.lines=lines.concat(blankLines(types[mode].cols,1));renderForm()}
-function pasteExcel(){
- if(!editing)return;
- const raw=prompt('Colle ici les lignes copiées depuis Excel (colonnes séparées par tabulations). Les colonnes doivent suivre l’ordre affiché dans le tableau.');
- if(raw===null||!raw.trim())return;
- const cols=types[mode].cols, lines=collectLines().filter(r=>Object.values(r).some(v=>v));
- const parsed=raw.trim().split(/\r?\n/).map(row=>{let cells=row.split('\t'),o={};cols.forEach((c,i)=>o[c]=(cells[i]||'').trim());return o}).filter(r=>Object.values(r).some(v=>v));
- const merged=lines.concat(parsed);
- if(merged.length>30){alert('La limite est de 30 lignes. Seules les 30 premières lignes seront conservées.');}
- working.lines=merged.slice(0,30);while(working.lines.length<2)working.lines.push(...blankLines(cols,1));
- renderForm();setNotice(parsed.length+' ligne(s) collée(s). Vérifie les données avant validation.');
-}
-function validateRecord(){
- if(!editing||!working){setNotice('Clique sur Créer ou Modifier avant de valider.');return}
- let lines=collectLines();
- if(!lines.length){alert('Ajoute au moins une ligne.');return}
- if(lines.some(l=>!l['Article']&&!l['ARTICLE'])){alert('Le champ Article est obligatoire sur chaque ligne renseignée.');return}
- if(lines.some(l=>!(l['Quantité']||l['QUANTITE']||l['Quantité A transférer']))){alert('La quantité est obligatoire sur chaque ligne renseignée.');return}
- if(mode==='retour'&&!document.getElementById('urgency').value){alert('Le choix de l’urgence est obligatoire.');return}
- if(mode==='preparee'){
-  const date=document.getElementById('plannedDate').value;
-  if(!date){alert('La date prévue est obligatoire.');return}
-  const carrier=document.getElementById('plannedCarrier').value;
-  const from=document.getElementById('fromSite').value,to=document.getElementById('toSite').value;
-  lines=lines.map(l=>({...l,DATE:date,transporteur:carrier,depuis:from,vers:to}));
-  working.depart=date;
- }
- if(mode==='retour')lines=lines.map(l=>({...l,Urgence:document.getElementById('urgency').value}));
- let old=currentId?record(currentId):null;
- working.lines=lines;working.updated=iso();working.status=working.status==='Brouillon'?'Validée':working.status;
- if(mode==='preparee'&&working.status==='Validée')working.status='Préparée';
- if(old){let prev=JSON.stringify(old.lines);let next=JSON.stringify(lines);working.created=old.created;if(prev!==next)log('Modification ligne',working.id,'Anciennes et nouvelles lignes conservées dans la fiche modifiée');db.records=db.records.map(r=>r.id===working.id?JSON.parse(JSON.stringify(working)):r);log('Modification',working.id,'Fiche mise à jour');}
- else{db.records.push(JSON.parse(JSON.stringify(working)));log('Création',working.id,'Nouvelle fiche enregistrée')}
- saveDB();currentId=working.id;editing=false;validated=true;renderForm();renderHistory();refreshDashboard();setNotice('Validation réussie pour '+currentId+'. Veux-tu imprimer maintenant ?');if(confirm('Enregistrement réussi. Imprimer la fiche maintenant ?'))printRecord();
-}
-function printRecord(){if(!validated&&!currentId){alert('Valide d’abord la fiche avant de l’imprimer.');return}window.print()}
-function nextBL(){let d=(working.depart||iso()).replaceAll('-','').slice(2);let count=db.records.filter(r=>(r.bl||'').startsWith('BL'+d)).length+1;return 'BL'+d+String(count).padStart(3,'0')}
-function toLoad(){
- if(!working||working.status!=='Préparée'&&working.status!=='À charger'){alert('La navette doit être préparée pour continuer.');return}
- const changes=confirm('La préparation a-t-elle changé ? OK = Oui, modifier la préparation. Annuler = Non, générer le BL.');
- if(changes){enableEdit();return}
- working.bl=working.bl||nextBL();working.status='À charger';working.updated=iso();
- db.records=db.records.map(r=>r.id===working.id?JSON.parse(JSON.stringify(working)):r);log('Génération BL',working.id,'BL '+working.bl+' généré (simulation)');saveDB();
- validated=true;editing=false;renderForm();renderHistory();refreshDashboard();
- if(confirm('BL '+working.bl+' généré. Imprimer le bon de livraison ?'))printBL();
-}
-function printBL(){
- if(!working?.bl){alert('Aucun BL généré.');return}
- let rows=working.lines.map(l=>'<tr>'+shuttleCols.map(c=>'<td>'+esc(l[c])+'</td>').join('')+'</tr>').join('');
- let w=window.open('','_blank');
- if(!w){window.print();return}
- w.document.write('<html><head><title>Bon de livraison '+esc(working.bl)+'</title><style>body{font:12px Arial;padding:20px}table{border-collapse:collapse;width:100%;font-size:10px}td,th{border:1px solid #777;padding:5px}h1{font-size:20px}</style></head><body><h1>BON DE LIVRAISON — '+esc(working.bl)+'</h1><p>Navette : '+esc(working.id)+' · Date prévue : '+esc(working.depart||'')+'</p><table><thead><tr>'+shuttleCols.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table><p>Document de démonstration — informations ONU et CLASSE reprises des lignes saisies.</p><script>window.onload=()=>window.print()<\/script></body></html>');
- w.document.close();
-}
+function confirmLoaded(){if(!draft)return;if(!operator())return;draft.status='Chargée';db.records=db.records.map(r=>r.id===draft.id?JSON.parse(JSON.stringify(draft)):r);log('Chargement',draft.id,'Chargement confirmé');save();renderForm();renderDashboard();renderRecordHistory();notice('Chargement confirmé. La navette peut maintenant être expédiée.')}
 function markDispatched(){
- let id=document.getElementById('dispatchNav')?.value.trim()||working?.id;
- let bl=document.getElementById('dispatchBL')?.value.trim()||working?.bl;
- let r=record(id);
- if(!r){alert('Numéro NAV introuvable.');return}
- if(!bl){alert('Le numéro BL est obligatoire.');return}
- if(r.bl&&r.bl!==bl){alert('Le BL saisi ne correspond pas à cette navette.');return}
- if(!r.bl){r.bl=bl}
- if(!userName())return;
- r.status='Expédiée';r.updated=iso();working=JSON.parse(JSON.stringify(r));currentId=r.id;mode='preparee';validated=true;editing=false;
- log('Expédition',r.id,'Départ confirmé, BL '+bl+' (simulation)');saveDB();renderForm();renderHistory();refreshDashboard();
- setNotice('Expédition enregistrée. Les notifications aux deux sites sont simulées : aucun mail envoyé.');
-}
-function openReceipt(){
- if(!working?.bl){alert('Cette navette doit posséder un BL.');return}
- mode='recue';currentId=working.id;working=JSON.parse(JSON.stringify(record(currentId)));editing=false;validated=false;
- document.getElementById('formTitle').textContent=types.recue.title;renderForm();renderHistory();
- let rows=working.lines.map((l,i)=>`<div class="formgrid"><div class="field"><label>Article</label><input value="${esc(l.ARTICLE)}" disabled></div><div class="field"><label>Lot</label><input value="${esc(l.LOT)}" disabled></div><div class="field"><label>Quantité expédiée</label><input value="${esc(l.QUANTITE)}" disabled></div><div class="field"><label>Quantité reçue *</label><input type="number" min="0" data-received="${i}" value="${esc(l.receivedQty??l.QUANTITE)}"></div></div>`).join('');
- document.getElementById('receivedLines').innerHTML=rows;
- setNotice('Réception du BL '+working.bl+'. Vérifie chaque quantité reçue.');
-}
+ let id=document.getElementById('dispatchNav')?.value.trim()||draft?.id,bl=document.getElementById('dispatchBL')?.value.trim()||draft?.bl,r=get(id);
+ if(!r){alert('Numéro NAV introuvable.');return}if(!bl){alert('Le numéro BL est obligatoire.');return}if(r.bl&&r.bl!==bl){alert('Le BL ne correspond pas à cette navette.');return}if(!r.bl)r.bl=bl;if(!operator())return;r.status='Expédiée';r.updated=today();draft=JSON.parse(JSON.stringify(r));activeId=r.id;kind='preparee';editing=false;hasValidated=true;db.records=db.records.map(x=>x.id===r.id?JSON.parse(JSON.stringify(r)):x);log('Expédition',r.id,'Départ confirmé, BL '+bl+' ; notification simulée');save();document.getElementById('formTitle').textContent=CONFIG[kind].title;renderForm();renderRecordHistory();renderDashboard();notice('Expédition enregistrée. Notification aux sites simulée, aucun mail envoyé.')}
+function startReceipt(){if(!draft?.bl){alert('Cette navette doit posséder un BL.');return}kind='recue';draft=JSON.parse(JSON.stringify(get(activeId)));editing=false;hasValidated=false;document.getElementById('formTitle').textContent=CONFIG.recue.title;renderForm();let html=draft.lines.map((l,i)=>`<div class="fieldgrid"><div class="field"><label>Article</label><input value="${safe(l.ARTICLE)}" disabled></div><div class="field"><label>Lot</label><input value="${safe(l.LOT)}" disabled></div><div class="field"><label>Quantité expédiée</label><input value="${safe(l.QUANTITE)}" disabled></div><div class="field"><label>Quantité reçue *</label><input type="number" min="0" data-received="${i}" value="${safe(l.receivedQty??l.QUANTITE)}"></div></div>`).join('');document.getElementById('receiptLines').innerHTML=html;notice('Réception du BL '+draft.bl+'. Contrôle les quantités et le rangement SAP.')}
 function completeReceipt(){
- let bl=document.getElementById('receiptBL')?.value.trim();
- let r=db.records.find(x=>x.bl===bl);
- if(!r){alert('BL introuvable.');return}
- if(r.status==='Livrée'){alert('Cette navette est déjà livrée et verrouillée.');return}
- const sap=document.getElementById('sapDone').value;
- if(!sap){alert('Indique si le rangement SAP a été effectué.');return}
- if(sap==='no'){r.status='Régularisation requise';r.sap=false;log('Réception en attente',r.id,'Rangement SAP à régulariser');saveDB();working=JSON.parse(JSON.stringify(r));currentId=r.id;mode='preparee';renderForm();renderHistory();refreshDashboard();setNotice('Rangement SAP non confirmé : la navette reste en attente de régularisation.');return}
- const received=[...document.querySelectorAll('[data-received]')];
- let diff=[];
- received.forEach(el=>{let i=Number(el.dataset.received),sent=Number(r.lines[i].QUANTITE||0),got=Number(el.value);r.lines[i].receivedQty=got;if(got!==sent)diff.push({article:r.lines[i].ARTICLE,lot:r.lines[i].LOT,envoyee:sent,recue:got})});
- if(received.some(el=>el.value===''||Number(el.value)<0)){alert('Saisis une quantité reçue valide pour chaque ligne.');return}
- if(!userName())return;
- r.received=true;r.sap=true;r.status='Livrée';r.receivedDate=iso();r.updated=iso();r.discrepancies=diff;
- log('Réception',r.id,diff.length?'Écart(s) : '+JSON.stringify(diff):'Quantités conformes, rangement SAP confirmé');
- saveDB();working=JSON.parse(JSON.stringify(r));currentId=r.id;mode='preparee';editing=false;validated=true;renderForm();renderHistory();refreshDashboard();
- setNotice(diff.length?'Réception enregistrée avec '+diff.length+' écart(s). Notification simulée aux deux sites.':'Réception validée. Rangement SAP confirmé. La navette et le BL sont désormais verrouillés.');
- alert(diff.length?'Écart(s) détecté(s). Les notifications sont simulées, aucun mail n’a été envoyé.':'Réception validée. Navette verrouillée.');
+ let bl=document.getElementById('receiptBL')?.value.trim(),r=db.records.find(x=>x.bl===bl);if(!r){alert('BL introuvable.');return}if(r.status==='Livrée'){alert('Cette navette est déjà livrée et verrouillée.');return}
+ let sap=document.getElementById('sapDone').value;if(!sap){alert('Indique si le rangement SAP a été effectué.');return}
+ if(sap==='no'){r.status='Régularisation requise';r.sap=false;db.records=db.records.map(x=>x.id===r.id?r:x);log('Réception en attente',r.id,'Rangement SAP à régulariser');save();draft=JSON.parse(JSON.stringify(r));kind='preparee';renderForm();renderDashboard();renderRecordHistory();notice('Rangement SAP non confirmé : navette en attente de régularisation.');return}
+ let received=[...document.querySelectorAll('[data-received]')],diff=[];if(received.some(e=>e.value===''||Number(e.value)<0)){alert('Saisis une quantité reçue valide pour chaque ligne.');return}
+ received.forEach(e=>{let i=Number(e.dataset.received),sent=Number(r.lines[i].QUANTITE||0),got=Number(e.value);r.lines[i].receivedQty=got;if(sent!==got)diff.push({article:r.lines[i].ARTICLE,lot:r.lines[i].LOT,envoyee:sent,recue:got})});
+ if(!operator())return;r.received=true;r.sap=true;r.status='Livrée';r.receivedDate=today();r.updated=today();r.discrepancies=diff;db.records=db.records.map(x=>x.id===r.id?JSON.parse(JSON.stringify(r)):x);log('Réception',r.id,diff.length?'Écart(s) : '+JSON.stringify(diff):'Quantités conformes, rangement SAP confirmé');save();draft=JSON.parse(JSON.stringify(r));activeId=r.id;kind='preparee';editing=false;hasValidated=true;renderForm();renderRecordHistory();renderDashboard();notice(diff.length?'Réception enregistrée avec '+diff.length+' écart(s). Notification simulée aux deux sites.':'Réception validée. La navette et le BL sont verrouillés.');alert(diff.length?'Écart(s) détecté(s). Notifications simulées, aucun mail envoyé.':'Réception validée. Navette verrouillée.')}
+function renderDashboard(){
+ const year=String(new Date().getFullYear()),all=db.records.filter(r=>!r.seedDemo||true),sh=all.filter(r=>['preparee','expediee','recue'].includes(r.type)),done=sh.filter(r=>r.status==='Livrée'&&(r.receivedDate||r.depart||'').startsWith(year)),ab=done.filter(r=>r.lines.some(l=>l.depuis==='A'&&l.vers==='B')).length,ba=done.length-ab;
+ document.getElementById('kTotal').textContent=done.length;document.getElementById('kAB').textContent=ab;document.getElementById('kBA').textContent=ba;document.getElementById('pctAB').textContent=(done.length?Math.round(ab/done.length*100):0)+'%';document.getElementById('pctBA').textContent=(done.length?Math.round(ba/done.length*100):0)+'%';
+ const months=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'],monthData=months.map((m,i)=>{let a=done.filter(r=>{let d=r.receivedDate||r.depart||'';return d.startsWith(year+'-'+String(i+1).padStart(2,'0'))&&r.lines.some(l=>l.depuis==='A')}).length;let b=done.filter(r=>{let d=r.receivedDate||r.depart||'';return d.startsWith(year+'-'+String(i+1).padStart(2,'0'))&&r.lines.some(l=>l.depuis==='B')}).length;return [a,b]});
+ const maxM=Math.max(1,...monthData.flat());document.getElementById('monthChart').innerHTML=monthData.map((v,i)=>`<div class="chart-col"><div class="bars"><div class="bar" style="height:${v[0]/maxM*46}px"></div><div class="bar b" style="height:${v[1]/maxM*46}px"></div></div><span class="chart-label">${months[i]}</span></div>`).join('');
+ const days=['Lun','Mar','Mer','Jeu','Ven'],weekData=days.map((_,i)=>{let a=0,b=0;done.forEach(r=>{let d=new Date((r.receivedDate||r.depart)+'T12:00:00').getDay();if(d===i+1){if(r.lines.some(l=>l.depuis==='A'))a++;else b++}});return[a,b]});let maxD=Math.max(1,...weekData.flat());document.getElementById('weekdayChart').innerHTML=weekData.map((v,i)=>`<div class="chart-col"><div class="bars"><div class="bar" style="height:${v[0]/maxD*46}px"></div><div class="bar b" style="height:${v[1]/maxD*46}px"></div></div><span class="chart-label">${days[i]}</span></div>`).join('');
+ let carriers={};done.forEach(r=>r.lines.forEach(l=>{let c=l.transporteur||'Non renseigné';carriers[c]=(carriers[c]||0)+1}));let cs=Object.entries(carriers).sort((a,b)=>b[1]-a[1]).slice(0,3),ct=cs.reduce((s,x)=>s+x[1],0)||1,colors=['#00d28b','#147bff','#ff9b21'];let p=0,stops=[];cs.forEach((x,i)=>{let n=x[1]/ct*100;stops.push(`${colors[i]} ${p}% ${p+n}%`);p+=n});document.getElementById('carrierDonut').style.background=cs.length?'conic-gradient('+cs.map((x,i)=>`${colors[i]} ${cs.slice(0,i).reduce((s,y)=>s+y[1],0)/ct*100}% ${cs.slice(0,i+1).reduce((s,y)=>s+y[1],0)/ct*100}%`).join(',')+')':'#16405e';document.getElementById('donutTotal').innerHTML=done.length+'<br>navettes';document.getElementById('carrierLegend').innerHTML=cs.map((x,i)=>`<div><i class="dot" style="background:${colors[i]}"></i>${Math.round(x[1]/ct*100)}% ${safe(x[0])}</div>`).join('')||'Pas de données';
+ document.getElementById('siteDonut').style.background=`conic-gradient(#00d28b 0 ${done.length?ab/done.length*100:0}%,#147bff ${done.length?ab/done.length*100:0}% 100%)`;document.getElementById('siteDonutTotal').innerHTML=done.length+'<br>navettes';document.getElementById('siteLegend').innerHTML=`<div><i class="dot" style="background:#00d28b"></i>${done.length?Math.round(ab/done.length*100):0}% A → B</div><div><i class="dot" style="background:#147bff"></i>${done.length?Math.round(ba/done.length*100):0}% B → A</div>`;
+ renderRecent(showAllRecent);
 }
-function renderHistory(){
- const el=document.getElementById('history');if(!el)return;
- el.innerHTML='<table><thead><tr><th>Date</th><th>Utilisateur</th><th>Action</th><th>Référence</th><th>Détail</th></tr></thead><tbody>'+
- db.history.slice(0,50).map(h=>`<tr><td>${esc(h.date)}</td><td>${esc(h.user)}</td><td>${esc(h.action)}</td><td>${esc(h.id)}</td><td>${esc(h.detail)}</td></tr>`).join('')+'</tbody></table>';
-}
-function bar(label,value,max,color=''){
- let width=max?Math.round(value/max*100):0;
- return `<div class="barline"><span>${esc(label)}</span><div class="track"><div class="fill" style="width:${width}%;${color?'background:'+color:''}"></div></div><span>${value}</span></div>`;
-}
-function refreshDashboard(){
- const sh=db.records.filter(r=>r.type==='preparee'||r.type==='expediee'||r.type==='recue');
- const done=sh.filter(r=>r.status==='Livrée');
- document.getElementById('kTotal').textContent=done.length;
- document.getElementById('kAB').textContent=done.filter(r=>r.lines.some(l=>l.depuis==='A'&&l.vers==='B')).length;
- document.getElementById('kBA').textContent=done.filter(r=>r.lines.some(l=>l.depuis==='B'&&l.vers==='A')).length;
- document.getElementById('kPending').textContent=db.records.filter(r=>!['Livrée','Annulée'].includes(r.status)).length;
- const year=String(new Date().getFullYear()),months=Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0'));
- const counts=months.map(m=>done.filter(r=>(r.receivedDate||r.depart||'').startsWith(year+'-'+m)).length),max=Math.max(1,...counts);
- document.getElementById('monthly').innerHTML=months.map((m,i)=>bar(['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'][i],counts[i],max)).join('');
- const days=['Lun','Mar','Mer','Jeu','Ven'];let dc=days.map(()=>0),cc={};
- done.forEach(r=>{let d=new Date((r.receivedDate||r.depart)+'T12:00:00').getDay();if(d>=1&&d<=5)dc[d-1]++;(r.lines||[]).forEach(l=>{if(l.transporteur)cc[l.transporteur]=(cc[l.transporteur]||0)+1})});
- document.getElementById('weekdays').innerHTML=days.map((d,i)=>bar(d,dc[i],Math.max(1,...dc))).join('');
- let carr=Object.entries(cc).sort((a,b)=>b[1]-a[1]),ctotal=carr.reduce((s,a)=>s+a[1],0)||1;
- const colors=['#438cf2','#f3b64c','#35b77a','#c46be3'];
- document.getElementById('carriers').innerHTML=carr.length?carr.map(([n,v],i)=>`<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;gap:8px"><span>${esc(n)}</span><strong>${Math.round(v/ctotal*100)}%</strong></div><div class="track" style="margin-top:5px"><div class="fill" style="width:${v/ctotal*100}%;background:${colors[i%colors.length]}"></div></div></div>`).join(''):'<p class="muted">Aucune donnée transporteur</p>';
- document.getElementById('recent').innerHTML='<table><thead><tr><th>Numéro</th><th>Date prévue</th><th>Trajet</th><th>Transporteur</th><th>BL</th><th>Statut</th><th></th></tr></thead><tbody>'+
- sh.slice().sort((a,b)=>(b.updated||'').localeCompare(a.updated||'')).slice(0,10).map(r=>`<tr><td>${esc(r.id)}</td><td>${esc(r.depart||'')}</td><td>${esc((r.lines[0]?.depuis||'?')+' → '+(r.lines[0]?.vers||'?'))}</td><td>${esc(r.lines[0]?.transporteur||'')}</td><td>${esc(r.bl||'')}</td><td><span class="status">${esc(r.status)}</span></td><td><button class="grey" onclick="quickOpen('${r.id}')">Ouvrir</button></td></tr>`).join('')+'</tbody></table>';
-}
-function quickOpen(id){let r=record(id);if(!r)return;openForm(r.type);document.getElementById('lookupId').value=id;loadRecord()}
-function searchAll(){
- const a=document.getElementById('searchArticle').value.trim().toLowerCase(),l=document.getElementById('searchLot').value.trim().toLowerCase(),d=document.getElementById('searchDate').value;
- if(!a&&!l&&!d){alert('Saisis au moins un critère de recherche.');return}
- let results=[];
- db.records.filter(r=>r.status!=='Annulée').forEach(r=>(r.lines||[]).forEach(line=>{
- const article=String(line.Article||line.ARTICLE||'').toLowerCase(),lot=String(line.Lot||line.LOT||'').toLowerCase(),date=String(line.DATE||r.depart||'');
- if((!a||article.includes(a))&&(!l||lot.includes(l))&&(!d||date===d))results.push({r,line,source:r.type==='transfert'||r.type==='retour'?'Demandes':'Navettes effectuées'});
- }));
- const el=document.getElementById('searchResults');
- el.innerHTML=results.length?'<table><thead><tr><th>Référence</th><th>Source</th><th>Article</th><th>Lot</th><th>Date</th><th>Statut</th><th></th></tr></thead><tbody>'+results.map(x=>`<tr><td>${esc(x.r.id)}</td><td>${esc(x.source)}</td><td>${esc(x.line.Article||x.line.ARTICLE||'')}</td><td>${esc(x.line.Lot||x.line.LOT||'')}</td><td>${esc(x.line.DATE||x.r.depart||'')}</td><td>${esc(x.r.status)}</td><td><button class="grey" onclick="quickOpen('${x.r.id}')">Ouvrir</button></td></tr>`).join('')+'</tbody></table>':'<p class="muted" style="padding:12px">Aucun résultat trouvé dans les demandes ni dans les navettes.</p>';
-}
-function clearSearch(){['searchArticle','searchLot','searchDate'].forEach(id=>document.getElementById(id).value='');document.getElementById('searchResults').innerHTML=''}
-function resetDemo(){if(!confirm('Réinitialiser toutes les données locales et recharger les données fictives ?'))return;db=seed();saveDB();showDashboard();alert('Données fictives réinitialisées.')}
-loadDB();refreshDashboard();
+function statusBadge(s){let cl=s==='Livrée'||s==='Validée'?'green':s==='Annulée'?'red':['À charger','Préparée','Régularisation requise'].includes(s)?'orange':'';return `<span class="status ${cl}">${safe(s)}</span>`}
+function renderRecent(all=false){showAllRecent=all;let rs=db.records.filter(r=>!r.seedDemo).concat(db.records.filter(r=>r.seedDemo&&r.status==='Livrée').slice(0,6));rs.sort((a,b)=>(b.updated||'').localeCompare(a.updated||''));if(!all)rs=rs.slice(0,5);document.getElementById('recentTable').innerHTML=rs.length?'<table><thead><tr><th>N°</th><th>Date</th><th>Type</th><th>Statut</th><th>Trajet</th><th>Transporteur</th><th>Nb lignes</th><th>Créée le</th><th>Actions</th></tr></thead><tbody>'+rs.map(r=>`<tr><td>${safe(r.id)}</td><td>${safe(r.depart||r.created||'')}</td><td>${safe(CONFIG[r.type]?.title||r.type)}</td><td>${statusBadge(r.status)}</td><td>${safe((r.lines[0]?.depuis||'—')+' → '+(r.lines[0]?.vers||'—'))}</td><td>${safe(r.lines[0]?.transporteur||'—')}</td><td>${r.lines.length}</td><td>${safe(r.created||'')}</td><td><button class="tiny ghost" onclick="quickOpen('${safe(r.id)}')">◉</button> <button class="tiny ghost" onclick="quickEdit('${safe(r.id)}')">✎</button> <button class="tiny ghost" onclick="printById('${safe(r.id)}')">▣</button></td></tr>`).join('')+'</tbody></table>':'<div class="empty">Aucune fiche à afficher.</div>'}
+function quickOpen(id){let r=get(id);if(!r)return;openForm(r.type);document.getElementById('lookupId').value=id;loadById()}
+function quickEdit(id){let r=get(id);if(!r)return;openForm(r.type);document.getElementById('lookupId').value=id;loadById();editCurrent()}
+function printById(id){let r=get(id);if(!r)return;openForm(r.type);document.getElementById('lookupId').value=id;loadById();if(r.bl&&confirm('Imprimer le bon de livraison ?'))printBL();else printCurrent()}
+function searchGlobal(){let q=document.getElementById('globalSearch').value.trim().toLowerCase();if(!q)return;let rs=[];db.records.filter(r=>r.status!=='Annulée').forEach(r=>r.lines.forEach(l=>{let text=Object.values(l).join(' ').toLowerCase()+' '+r.id.toLowerCase()+' '+(r.bl||'').toLowerCase()+' '+(r.depart||'');if(text.includes(q))rs.push({r,l})}));document.getElementById('searchPanel').classList.remove('hidden');document.getElementById('searchResults').innerHTML=rs.length?'<table><thead><tr><th>Référence</th><th>Source</th><th>Article</th><th>Lot</th><th>Date</th><th>Statut</th><th></th></tr></thead><tbody>'+rs.map(x=>`<tr><td>${safe(x.r.id)}</td><td>${['transfert','retour'].includes(x.r.type)?'Demandes':'Navettes'}</td><td>${safe(x.l.Article||x.l.ARTICLE||'')}</td><td>${safe(x.l.Lot||x.l.LOT||'')}</td><td>${safe(x.l.DATE||x.r.depart||x.r.created||'')}</td><td>${statusBadge(x.r.status)}</td><td><button class="tiny ghost" onclick="quickOpen('${safe(x.r.id)}')">Ouvrir</button></td></tr>`).join('')+'</tbody></table>':'<div class="empty">Aucun résultat.</div>'}
+function clearGlobal(){document.getElementById('globalSearch').value='';document.getElementById('searchPanel').classList.add('hidden')}
+function renderRecordHistory(){let h=db.history.filter(x=>x.id===activeId).slice(0,15);document.getElementById('recordHistory').innerHTML=h.length?'<table><thead><tr><th>Date</th><th>Utilisateur</th><th>Action</th><th>Détail</th></tr></thead><tbody>'+h.map(x=>`<tr><td>${safe(x.date)}</td><td>${safe(x.user)}</td><td>${safe(x.action)}</td><td>${safe(x.detail)}</td></tr>`).join('')+'</tbody></table>':'<div class="empty">Aucune action enregistrée pour cette fiche.</div>'}
+function openHistory(){view='history';document.getElementById('dashboard').classList.add('hidden');document.getElementById('workspace').classList.add('hidden');document.getElementById('historyPage').classList.remove('hidden');document.getElementById('operatorName').value=localStorage.getItem('navetteUser')||'';setActiveNav();renderHistoryPage()}
+function renderHistoryPage(){let q=(document.getElementById('histFilter')?.value||'').toLowerCase(),a=document.getElementById('histAction')?.value||'',hs=db.history.filter(h=>(!q||h.id.toLowerCase().includes(q))&&(!a||h.action===a));document.getElementById('allHistory').innerHTML='<table><thead><tr><th>Date</th><th>Utilisateur</th><th>Action</th><th>Référence</th><th>Détail</th></tr></thead><tbody>'+hs.map(h=>`<tr><td>${safe(h.date)}</td><td>${safe(h.user)}</td><td>${safe(h.action)}</td><td>${safe(h.id)}</td><td>${safe(h.detail)}</td></tr>`).join('')+'</tbody></table>'}
+function setOperator(v){if(v.trim())localStorage.setItem('navetteUser',v.trim());setTopDate();toast('Utilisateur de démonstration mis à jour.')}
+function printCurrent(){if(!activeId||!hasValidated){alert('Valide d’abord la fiche avant impression.');return}window.print()}
+function printBL(){if(!draft?.bl){alert('Aucun BL généré.');return}let r=draft,win=window.open('','_blank');if(!win){window.print();return}win.document.write(`<html><head><title>Bon de livraison ${safe(r.bl)}</title><style>body{font:12px Arial;padding:24px}h1{font-size:22px}table{border-collapse:collapse;width:100%;font-size:10px}td,th{border:1px solid #777;padding:5px}th{background:#eee}</style></head><body><h1>BON DE LIVRAISON — ${safe(r.bl)}</h1><p>Navette : ${safe(r.id)} | Date prévue : ${safe(r.depart||'')} | Trajet : ${safe((r.lines[0]?.depuis||'')+' → '+(r.lines[0]?.vers||''))}</p><table><thead><tr>${SHUTTLE_COLS.map(c=>`<th>${safe(c)}</th>`).join('')}</tr></thead><tbody>${r.lines.map(l=>'<tr>'+SHUTTLE_COLS.map(c=>`<td>${safe(l[c])}</td>`).join('')+'</tr>').join('')}</tbody></table><p>Les informations ONU et CLASSE sont reprises des lignes saisies.</p><p>Document généré pour la démonstration — non connecté à SAP.</p><script>window.onload=()=>window.print()<\/script></body></html>`);win.document.close()}
+function exportCurrent(){if(!draft){alert('Aucune fiche à exporter.');return}let cols=CONFIG[kind].cols,txt=[cols.join(';'),...collectLines().map(l=>cols.map(c=>'"'+String(l[c]||'').replaceAll('"','""')+'"').join(';'))].join('\n');download(txt,draft.id+'.csv','text/csv;charset=utf-8')}
+function exportBackup(){download(JSON.stringify(db,null,2),'navettes-intersites-sauvegarde.json','application/json')}
+function download(text,name,type){let a=document.createElement('a'),u=URL.createObjectURL(new Blob([text],{type}));a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+function resetDemo(){if(!confirm('Réinitialiser les données et recharger les exemples fictifs ? Les données locales actuelles seront effacées.'))return;db=sample();save();goDashboard();toast('Données fictives réinitialisées.')}
+function renderRecordHistorySafe(){}
+init();
 </script>
+</body>
+</html>'''
+path = Path("/mnt/data/index.html")
+path.write_text(html, encoding="utf-8")
+print(f"Fichier créé : {path} ({path.stat().st_size:,} octets)")
