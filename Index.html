@@ -1,1 +1,400 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NAVETTES INTERSITES</title>
+<style>
+:root{--bg:#10151d;--panel:#1a2330;--panel2:#222e3d;--text:#f3f6fa;--muted:#aab6c5;--blue:#2878e5;--green:#168653;--orange:#dc8518;--red:#c43c42;--border:#354457}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Arial,sans-serif}
+header{padding:18px 24px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+h1{font-size:28px;letter-spacing:1px;margin:0}h2{font-size:20px;margin:0 0 16px}h3{font-size:15px;margin:0 0 10px}
+main{padding:18px 24px;max-width:1600px;margin:auto}
+.toolbar,.actions,.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{border:0;border-radius:6px;padding:10px 14px;color:white;background:var(--panel2);font-weight:bold;cursor:pointer}
+button:hover{filter:brightness(1.15)}button:disabled{opacity:.4;cursor:not-allowed}
+.blue{background:var(--blue)}.green{background:var(--green)}.orange{background:var(--orange);color:#171717}.red{background:var(--red)}.grey{background:#536171}
+.navbar{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.navbar button{flex:1;min-width:150px;min-height:42px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin:16px 0}
+.kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:15px}
+.kpi small{color:var(--muted);display:block;margin-bottom:8px}.kpi strong{font-size:27px}
+.charts{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px}
+.chart{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:15px;min-width:0}
+.barline{display:grid;grid-template-columns:44px 1fr 32px;align-items:center;gap:7px;margin:10px 0;font-size:12px}
+.track{height:12px;background:#303d4d;border-radius:8px;overflow:hidden}.fill{height:100%;background:#438cf2;border-radius:8px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:150px;flex:1}
+label{font-size:12px;color:var(--muted)}
+input,select,textarea{width:100%;padding:9px;border:1px solid var(--border);border-radius:5px;background:#111923;color:white;font:inherit}
+input[type=checkbox],input[type=radio]{width:auto}
+.formgrid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin:14px 0}
+.formgrid .wide{grid-column:span 2}
+.tablewrap{overflow:auto;max-height:440px;border:1px solid var(--border);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}
+th,td{padding:7px;border-bottom:1px solid var(--border);text-align:left}
+th{background:#273547;position:sticky;top:0;z-index:1}
+td input,td select{min-width:90px;padding:7px}
+.status{display:inline-block;padding:4px 7px;border-radius:4px;background:#344456}
+.urgent-tres{background:#ffeb3b;color:#cf2027;font-weight:bold}.urgent{background:#ffeb3b;color:#1764ce;font-weight:bold}.classique{background:#4bd17a;color:#111}
+.muted{color:var(--muted)}.hidden{display:none!important}.notice{padding:10px;border-radius:6px;background:#263b51;margin:10px 0}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:15px}
+@media(max-width:900px){.charts{grid-template-columns:1fr 1fr}.charts .chart:first-child{grid-column:span 2}.formgrid{grid-template-columns:repeat(2,minmax(120px,1fr))}}
+@media(max-width:600px){main{padding:12px}.kpis{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}.charts .chart:first-child{grid-column:auto}.formgrid{grid-template-columns:1fr}.formgrid .wide{grid-column:auto}h1{font-size:22px}}
+@media print{body{background:white;color:black}header,.navbar,.toolbar,.actions,.no-print,footer{display:none!important}main{padding:0}.panel,.kpi,.chart{background:white;color:black;border:1px solid #bbb;break-inside:avoid}input,select,textarea{background:white;color:black;border:0}.tablewrap{max-height:none;overflow:visible}th{position:static;background:#eee;color:black}}
+</style>
+</head>
+<body>
+<header>
+  <h1>NAVETTES INTERSITES</h1>
+  <div class="toolbar no-print">
+    <span class="muted">Mode démonstration · stockage local</span>
+    <button class="grey" onclick="resetDemo()">Réinitialiser la démo</button>
+  </div>
+</header>
+<main>
+  <nav class="navbar no-print">
+    <button class="blue" onclick="openForm('transfert')">Produit transférable</button>
+    <button class="blue" onclick="openForm('retour')">Produit à faire revenir</button>
+    <button class="blue" onclick="openForm('preparee')">Navette préparée</button>
+    <button class="blue" onclick="openForm('expediee')">Navette expédiée</button>
+    <button class="blue" onclick="openForm('recue')">Navette reçue</button>
+  </nav>
 
+  <section id="dashboard">
+    <div class="kpis">
+      <div class="kpi"><small>Navettes déchargées</small><strong id="kTotal">0</strong></div>
+      <div class="kpi"><small>Départ A → B</small><strong id="kAB">0</strong></div>
+      <div class="kpi"><small>Départ B → A</small><strong id="kBA">0</strong></div>
+      <div class="kpi"><small>À traiter</small><strong id="kPending">0</strong></div>
+    </div>
+    <div class="charts">
+      <div class="chart"><h3>Navettes déchargées par mois</h3><div id="monthly"></div></div>
+      <div class="chart"><h3>Départs par jour</h3><div id="weekdays"></div></div>
+      <div class="chart"><h3>Transporteurs</h3><div id="carriers"></div></div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>Recherche globale</h2>
+      <div class="filters no-print">
+        <div class="field"><label>Article</label><input id="searchArticle" placeholder="Numéro d'article"></div>
+        <div class="field"><label>Lot</label><input id="searchLot" placeholder="Numéro de lot"></div>
+        <div class="field"><label>Date</label><input id="searchDate" type="date"></div>
+        <button class="blue" onclick="searchAll()">Rechercher</button>
+        <button class="grey" onclick="clearSearch()">Effacer</button>
+      </div>
+      <div id="searchResults" class="tablewrap" style="margin-top:12px"></div>
+    </div>
+    <div class="panel">
+      <h2>Dernières navettes</h2>
+      <div id="recent" class="tablewrap"></div>
+    </div>
+  </section>
+
+  <section id="workspace" class="hidden">
+    <div class="panel">
+      <div class="toolbar no-print" style="justify-content:space-between">
+        <h2 id="formTitle">Formulaire</h2>
+        <button class="grey" onclick="showDashboard()">← Tableau de bord</button>
+      </div>
+      <div class="toolbar no-print">
+        <button class="grey" onclick="findRecord()">Rechercher</button>
+        <button class="blue" onclick="newRecord()">Créer</button>
+        <button class="orange" onclick="enableEdit()">Modifier</button>
+        <button class="red" onclick="cancelRecord()">Annuler</button>
+        <span id="recordBadge" class="status">Aucune fiche sélectionnée</span>
+      </div>
+      <div id="lookupBox" class="filters hidden no-print" style="margin-top:12px">
+        <div class="field"><label>Numéro de demande / navette / BL</label><input id="lookupId" placeholder="DP000001, RD00001, NAV000001…"></div>
+        <button class="blue" onclick="loadRecord()">Charger</button>
+      </div>
+      <div id="formNotice" class="notice hidden"></div>
+      <div id="formFields"></div>
+      <div id="lineArea"></div>
+      <div id="workflowArea"></div>
+      <div class="actions no-print" style="margin-top:16px">
+        <button id="addLineBtn" class="grey" onclick="addLine()">+ Ajouter une ligne</button>
+        <button id="pasteBtn" class="grey" onclick="pasteExcel()">Coller depuis Excel</button>
+        <button id="printBtn" class="grey" onclick="printRecord()" disabled>Imprimer</button>
+        <button id="validateBtn" class="green" onclick="validateRecord()">VALIDER</button>
+      </div>
+      <p class="muted no-print">Les modifications ne sont enregistrées qu'après validation. Démonstration locale : aucune donnée n'est envoyée.</p>
+    </div>
+    <div class="panel">
+      <h2>Historique des actions</h2>
+      <div id="history" class="tablewrap"></div>
+    </div>
+  </section>
+</main>
+<footer>Prototype de présentation · données fictives · aucune connexion SAP, aucun courriel envoyé</footer>
+
+<script>
+const KEY='navettes_intersites_demo_v1';
+const shuttleCols=['DATE','DESIGNATION','LOT','NB cart','PAL','ARTICLE','N° US','OBJET','QUANTITE','UNITE','NET','BRUTE','ONU','CLASSE','depuis','vers','transporteur'];
+const productCols=['Article','Magasin','Lot','bloqué ?','Désignation article','Numéro de magasin','Stock disponible','Unité','Date EM','Date Fab','Quantité A transférer'];
+const types={
+ transfert:{title:'Produit transférable',prefix:'DP',digits:6,cols:productCols,kind:'demande'},
+ retour:{title:'Produit à faire revenir',prefix:'RD',digits:5,cols:['Article','Désignation article','Lot','Quantité','Unité','Site de départ','Site de retour souhaité','Date de retour souhaitée','Urgence','Commentaire'],kind:'demande'},
+ preparee:{title:'Navette préparée',prefix:'NAV',digits:6,cols:shuttleCols,kind:'navette'},
+ expediee:{title:'Navette expédiée',prefix:'NAV',digits:6,cols:shuttleCols,kind:'navette'},
+ recue:{title:'Navette reçue',prefix:'NAV',digits:6,cols:shuttleCols,kind:'navette'}
+};
+let db,mode='transfert',currentId=null,editing=false,working=null,validated=false;
+function iso(d=new Date()){return d.toISOString().slice(0,10)}
+function dateOffset(n){let d=new Date();d.setDate(d.getDate()+n);return iso(d)}
+function blankLines(cols,n=1){return Array.from({length:n},()=>Object.fromEntries(cols.map(c=>[c,''])))}
+function seed(){
+ const lines1=[
+ ['2026-10-12','Résine industrielle','LOT26091','12','2','10004521','US001','Transfert matière','500','KG','500','520','3082','3','A','B','TransLog'],
+ ['2026-10-12','Additif technique','LOT26088','4','1','10006732','US002','Transfert matière','120','KG','120','128','','','A','B','TransLog']
+ ];
+ const lines2=[
+ ['2026-10-13','Solvant technique','LOT26072','8','1','10007865','US011','Transfert retour','200','KG','200','215','1993','3','B','A','RapidFret']
+ ];
+ const lines3=[
+ ['2026-10-14','Produit intermédiaire','LOT26099','10','2','10008765','US021','Navette prévue','400','KG','400','420','3082','3','A','B','TransLog'],
+ ['2026-10-14','Matière première','LOT26101','5','1','10009211','US022','Navette prévue','150','KG','150','160','','','A','B','TransLog']
+ ];
+ const mk=(id,type,lines,status,extra={})=>({id,type,lines:lines.map(a=>Object.fromEntries(types[type].cols.map((c,i)=>[c,a[i]||'']))),status,created:iso(),updated:iso(),...extra});
+ return {
+ records:[
+ mk('DP000001','transfert',[['10004521','001','LOT26091','Non','Résine industrielle','MAG-A01','1200','KG','2026-10-10','2026-08-01','500'],['10006732','001','LOT26088','Non','Additif technique','MAG-A02','350','KG','2026-10-11','2026-07-20','120']],'Validée'),
+ mk('RD00001','retour',[['10007865','Solvant technique','LOT26072','200','KG','B','A','2026-10-20','Urgent','Retour de stock']],'Validée'),
+ mk('NAV000001','preparee',lines1,'Livrée',{bl:'BL261012001',depart:'2026-10-12',received:true,sap:true}),
+ mk('NAV000002','preparee',lines2,'Livrée',{bl:'BL261013001',depart:'2026-10-13',received:true,sap:true}),
+ mk('NAV000003','preparee',lines3,'Préparée',{bl:'',depart:'2026-10-14',received:false,sap:false})
+ ],
+ history:[{date:iso(),user:'Démo',action:'Initialisation',id:'-',detail:'Chargement des données fictives'}],
+ counters:{DP:1,RD:1,NAV:3,BL:2}
+ };
+}
+function loadDB(){try{let s=localStorage.getItem(KEY);db=s?JSON.parse(s):seed()}catch(e){db=seed()}saveDB()}
+function saveDB(){localStorage.setItem(KEY,JSON.stringify(db))}
+function log(action,id,detail){db.history.unshift({date:new Date().toLocaleString('fr-FR'),user:localStorage.getItem('demoUser')||'Utilisateur démo',action,id,detail});saveDB()}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function record(id){return db.records.find(r=>r.id===id)}
+function alloc(prefix,digits){db.counters[prefix]=(db.counters[prefix]||0)+1;return prefix+String(db.counters[prefix]).padStart(digits,'0')}
+function userName(){let n=prompt('Prénom et nom de l’opérateur :',localStorage.getItem('demoUser')||'Utilisateur Démo');if(n===null)return false;localStorage.setItem('demoUser',n.trim()||'Utilisateur Démo');return true}
+function openForm(type){mode=type;currentId=null;editing=false;validated=false;working=null;document.getElementById('dashboard').classList.add('hidden');document.getElementById('workspace').classList.remove('hidden');document.getElementById('formTitle').textContent=types[type].title;document.getElementById('lookupBox').classList.add('hidden');renderForm();renderHistory();setNotice('Choisis Créer pour saisir une nouvelle fiche, ou Rechercher pour retrouver une fiche existante.');}
+function showDashboard(){document.getElementById('workspace').classList.add('hidden');document.getElementById('dashboard').classList.remove('hidden');refreshDashboard()}
+function setNotice(s){let el=document.getElementById('formNotice');el.textContent=s;el.classList.remove('hidden')}
+function clearNotice(){document.getElementById('formNotice').classList.add('hidden')}
+function renderForm(){
+ const t=types[mode];let fields='';
+ if(mode==='preparee'){
+ fields=`<div class="formgrid">
+ <div class="field"><label>Date prévue de la navette *</label><input id="plannedDate" type="date" value="${esc(working?.depart||dateOffset(1))}" ${editing?'':'disabled'}></div>
+ <div class="field"><label>Transporteur prévu</label><select id="plannedCarrier" ${editing?'':'disabled'}><option>TransLog</option><option>RapidFret</option><option>Autre transporteur</option></select></div>
+ <div class="field"><label>Site de départ</label><select id="fromSite" ${editing?'':'disabled'}><option>A</option><option>B</option></select></div>
+ <div class="field"><label>Site de destination</label><select id="toSite" ${editing?'':'disabled'}><option>B</option><option>A</option></select></div></div>`;
+ }else if(mode==='retour'){
+ fields=`<div class="formgrid"><div class="field"><label>Urgence obligatoire *</label><select id="urgency" ${editing?'':'disabled'}><option value="">Choisir…</option><option>Très urgent</option><option>Urgent</option><option>Classique</option></select></div></div>`;
+ }
+ document.getElementById('formFields').innerHTML=fields;
+ document.getElementById('lineArea').innerHTML=tableEditor();
+ document.getElementById('workflowArea').innerHTML=workflowEditor();
+ document.getElementById('addLineBtn').disabled=!editing;
+ document.getElementById('pasteBtn').disabled=!editing;
+ document.getElementById('validateBtn').disabled=!editing;
+ document.getElementById('printBtn').disabled=!validated;
+ document.getElementById('recordBadge').textContent=currentId?(currentId+' · '+(record(currentId)?.status||'Nouveau')):'Nouvelle fiche';
+ if(working)populateForm();
+}
+function tableEditor(){
+ let cols=types[mode].cols;
+ let rows=working?.lines||blankLines(cols,2);
+ let html='<div class="tablewrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead><tbody>';
+ rows.forEach((line,i)=>{html+='<tr>'+cols.map((c,j)=>{
+ let val=line[c]||'';
+ if(c==='Urgence')return `<td><select data-row="${i}" data-col="${esc(c)}" ${editing?'':'disabled'}><option></option>${['Très urgent','Urgent','Classique'].map(v=>`<option ${val===v?'selected':''}>${v}</option>`).join('')}</select></td>`;
+ return `<td><input data-row="${i}" data-col="${esc(c)}" value="${esc(val)}" ${editing?'':'disabled'} aria-label="${esc(c)} ligne ${i+1}"></td>`;
+ }).join('')+'</tr>'});
+ return html+'</tbody></table></div>';
+}
+function workflowEditor(){
+ if(!currentId||!working)return '';
+ if(mode==='preparee')return `<div class="panel"><h3>Cycle de la navette</h3><p>Statut : <span class="status">${esc(working.status)}</span> ${working.bl?'· BL : '+esc(working.bl):''}</p><div class="actions no-print">${working.status==='Préparée'?'<button class="orange" onclick="toLoad()">Navette à charger</button>':''}${working.status==='À charger'?'<button class="orange" onclick="toLoad()">Navette à charger</button>':''}${working.status==='Chargée'?'<button class="blue" onclick="markDispatched()">Confirmer expédition</button>':''}${working.status==='Expédiée'?'<button class="green" onclick="openReceipt()">Réceptionner la navette</button>':''}${working.status==='En réception'?'<button class="green" onclick="openReceipt()">Continuer réception</button>':''}</div></div>`;
+ if(mode==='expediee')return `<div class="formgrid"><div class="field"><label>Numéro NAV *</label><input id="dispatchNav" value="${esc(working.id)}"></div><div class="field"><label>Numéro BL *</label><input id="dispatchBL" value="${esc(working.bl||'')}"></div></div><button class="blue no-print" onclick="markDispatched()">Confirmer le départ</button>`;
+ if(mode==='recue')return `<div class="formgrid"><div class="field"><label>Numéro BL *</label><input id="receiptBL" value="${esc(working.bl||'')}"></div><div class="field"><label>Rangement dans le bon emplacement SAP effectué ?</label><select id="sapDone"><option value="">Choisir…</option><option value="yes">Oui</option><option value="no">Non</option></select></div></div><div id="receivedLines"></div><button class="green no-print" onclick="completeReceipt()">Valider la réception</button>`;
+ return '';
+}
+function populateForm(){
+ if(mode==='preparee'){
+ document.getElementById('plannedDate').value=working.depart||dateOffset(1);
+ document.getElementById('plannedCarrier').value=working.lines?.[0]?.transporteur||'TransLog';
+ document.getElementById('fromSite').value=working.lines?.[0]?.depuis||'A';
+ document.getElementById('toSite').value=working.lines?.[0]?.vers||'B';
+ }
+ if(mode==='retour')document.getElementById('urgency').value=working.lines?.[0]?.Urgence||'';
+}
+function collectLines(){
+ let cols=types[mode].cols, rows=[...document.querySelectorAll('#lineArea tbody tr')];
+ return rows.map((tr)=>{let obj={};tr.querySelectorAll('[data-col]').forEach(el=>obj[el.dataset.col]=el.value.trim());return obj}).filter(r=>Object.values(r).some(v=>v!==''));
+}
+function newRecord(){
+ if(!userName())return;
+ currentId=null;validated=false;editing=true;
+ working={id:alloc(types[mode].prefix,types[mode].digits),type:mode,lines:blankLines(types[mode].cols,2),status:'Brouillon',created:iso(),updated:iso(),depart:dateOffset(1),bl:'',received:false,sap:false};
+ renderForm();setNotice('Nouvelle fiche '+working.id+'. Complète les lignes puis clique sur VALIDER.');renderHistory();
+}
+function enableEdit(){
+ if(!currentId||!working){setNotice('Recherche une fiche avant de la modifier.');return}
+ if(working.status==='Livrée'||working.status==='Annulée'){setNotice('Cette fiche est verrouillée et ne peut plus être modifiée.');return}
+ if(!userName())return;
+ editing=true;validated=false;renderForm();setNotice('Mode modification. Les changements seront enregistrés après validation.');
+}
+function findRecord(){document.getElementById('lookupBox').classList.remove('hidden');document.getElementById('lookupId').focus()}
+function loadRecord(){
+ let id=document.getElementById('lookupId').value.trim().toUpperCase();
+ let r=record(id);
+ if(!r&&id.startsWith('BL'))r=db.records.find(x=>x.bl===id);
+ if(!r){setNotice('Aucune fiche trouvée pour '+id+'.');return}
+ if(mode==='transfert'||mode==='retour'){if(r.type!==mode){setNotice('Cette référence correspond à un autre type de fiche.');return}}
+ currentId=r.id;working=JSON.parse(JSON.stringify(r));mode=r.type;editing=false;validated=!['Brouillon','À charger'].includes(r.status);
+ document.getElementById('formTitle').textContent=types[mode].title;document.getElementById('lookupBox').classList.add('hidden');
+ renderForm();renderHistory();setNotice('Fiche '+r.id+' chargée. Statut : '+r.status+'.');document.getElementById('recordBadge').textContent=r.id+' · '+r.status;
+}
+function cancelRecord(){
+ if(!currentId||!working){setNotice('Recherche une fiche à annuler.');return}
+ if(working.status==='Livrée'||working.status==='Annulée'){setNotice('Cette fiche est déjà livrée ou annulée et ne peut pas être annulée.');return}
+ if(!confirm('Confirmer l’annulation de '+currentId+' ? Clique ensuite sur VALIDER pour enregistrer.'))return;
+ if(!userName())return;
+ working.status='Annulée';editing=true;validated=false;renderForm();setNotice('Annulation en attente. Clique sur VALIDER pour confirmer.');
+}
+function addLine(){if(!editing)return;let lines=collectLines();if(lines.length>=30){alert('Maximum 30 lignes par demande.');return}working.lines=lines.concat(blankLines(types[mode].cols,1));renderForm()}
+function pasteExcel(){
+ if(!editing)return;
+ const raw=prompt('Colle ici les lignes copiées depuis Excel (colonnes séparées par tabulations). Les colonnes doivent suivre l’ordre affiché dans le tableau.');
+ if(raw===null||!raw.trim())return;
+ const cols=types[mode].cols, lines=collectLines().filter(r=>Object.values(r).some(v=>v));
+ const parsed=raw.trim().split(/\r?\n/).map(row=>{let cells=row.split('\t'),o={};cols.forEach((c,i)=>o[c]=(cells[i]||'').trim());return o}).filter(r=>Object.values(r).some(v=>v));
+ const merged=lines.concat(parsed);
+ if(merged.length>30){alert('La limite est de 30 lignes. Seules les 30 premières lignes seront conservées.');}
+ working.lines=merged.slice(0,30);while(working.lines.length<2)working.lines.push(...blankLines(cols,1));
+ renderForm();setNotice(parsed.length+' ligne(s) collée(s). Vérifie les données avant validation.');
+}
+function validateRecord(){
+ if(!editing||!working){setNotice('Clique sur Créer ou Modifier avant de valider.');return}
+ let lines=collectLines();
+ if(!lines.length){alert('Ajoute au moins une ligne.');return}
+ if(lines.some(l=>!l['Article']&&!l['ARTICLE'])){alert('Le champ Article est obligatoire sur chaque ligne renseignée.');return}
+ if(lines.some(l=>!(l['Quantité']||l['QUANTITE']||l['Quantité A transférer']))){alert('La quantité est obligatoire sur chaque ligne renseignée.');return}
+ if(mode==='retour'&&!document.getElementById('urgency').value){alert('Le choix de l’urgence est obligatoire.');return}
+ if(mode==='preparee'){
+  const date=document.getElementById('plannedDate').value;
+  if(!date){alert('La date prévue est obligatoire.');return}
+  const carrier=document.getElementById('plannedCarrier').value;
+  const from=document.getElementById('fromSite').value,to=document.getElementById('toSite').value;
+  lines=lines.map(l=>({...l,DATE:date,transporteur:carrier,depuis:from,vers:to}));
+  working.depart=date;
+ }
+ if(mode==='retour')lines=lines.map(l=>({...l,Urgence:document.getElementById('urgency').value}));
+ let old=currentId?record(currentId):null;
+ working.lines=lines;working.updated=iso();working.status=working.status==='Brouillon'?'Validée':working.status;
+ if(mode==='preparee'&&working.status==='Validée')working.status='Préparée';
+ if(old){let prev=JSON.stringify(old.lines);let next=JSON.stringify(lines);working.created=old.created;if(prev!==next)log('Modification ligne',working.id,'Anciennes et nouvelles lignes conservées dans la fiche modifiée');db.records=db.records.map(r=>r.id===working.id?JSON.parse(JSON.stringify(working)):r);log('Modification',working.id,'Fiche mise à jour');}
+ else{db.records.push(JSON.parse(JSON.stringify(working)));log('Création',working.id,'Nouvelle fiche enregistrée')}
+ saveDB();currentId=working.id;editing=false;validated=true;renderForm();renderHistory();refreshDashboard();setNotice('Validation réussie pour '+currentId+'. Veux-tu imprimer maintenant ?');if(confirm('Enregistrement réussi. Imprimer la fiche maintenant ?'))printRecord();
+}
+function printRecord(){if(!validated&&!currentId){alert('Valide d’abord la fiche avant de l’imprimer.');return}window.print()}
+function nextBL(){let d=(working.depart||iso()).replaceAll('-','').slice(2);let count=db.records.filter(r=>(r.bl||'').startsWith('BL'+d)).length+1;return 'BL'+d+String(count).padStart(3,'0')}
+function toLoad(){
+ if(!working||working.status!=='Préparée'&&working.status!=='À charger'){alert('La navette doit être préparée pour continuer.');return}
+ const changes=confirm('La préparation a-t-elle changé ? OK = Oui, modifier la préparation. Annuler = Non, générer le BL.');
+ if(changes){enableEdit();return}
+ working.bl=working.bl||nextBL();working.status='À charger';working.updated=iso();
+ db.records=db.records.map(r=>r.id===working.id?JSON.parse(JSON.stringify(working)):r);log('Génération BL',working.id,'BL '+working.bl+' généré (simulation)');saveDB();
+ validated=true;editing=false;renderForm();renderHistory();refreshDashboard();
+ if(confirm('BL '+working.bl+' généré. Imprimer le bon de livraison ?'))printBL();
+}
+function printBL(){
+ if(!working?.bl){alert('Aucun BL généré.');return}
+ let rows=working.lines.map(l=>'<tr>'+shuttleCols.map(c=>'<td>'+esc(l[c])+'</td>').join('')+'</tr>').join('');
+ let w=window.open('','_blank');
+ if(!w){window.print();return}
+ w.document.write('<html><head><title>Bon de livraison '+esc(working.bl)+'</title><style>body{font:12px Arial;padding:20px}table{border-collapse:collapse;width:100%;font-size:10px}td,th{border:1px solid #777;padding:5px}h1{font-size:20px}</style></head><body><h1>BON DE LIVRAISON — '+esc(working.bl)+'</h1><p>Navette : '+esc(working.id)+' · Date prévue : '+esc(working.depart||'')+'</p><table><thead><tr>'+shuttleCols.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table><p>Document de démonstration — informations ONU et CLASSE reprises des lignes saisies.</p><script>window.onload=()=>window.print()<\/script></body></html>');
+ w.document.close();
+}
+function markDispatched(){
+ let id=document.getElementById('dispatchNav')?.value.trim()||working?.id;
+ let bl=document.getElementById('dispatchBL')?.value.trim()||working?.bl;
+ let r=record(id);
+ if(!r){alert('Numéro NAV introuvable.');return}
+ if(!bl){alert('Le numéro BL est obligatoire.');return}
+ if(r.bl&&r.bl!==bl){alert('Le BL saisi ne correspond pas à cette navette.');return}
+ if(!r.bl){r.bl=bl}
+ if(!userName())return;
+ r.status='Expédiée';r.updated=iso();working=JSON.parse(JSON.stringify(r));currentId=r.id;mode='preparee';validated=true;editing=false;
+ log('Expédition',r.id,'Départ confirmé, BL '+bl+' (simulation)');saveDB();renderForm();renderHistory();refreshDashboard();
+ setNotice('Expédition enregistrée. Les notifications aux deux sites sont simulées : aucun mail envoyé.');
+}
+function openReceipt(){
+ if(!working?.bl){alert('Cette navette doit posséder un BL.');return}
+ mode='recue';currentId=working.id;working=JSON.parse(JSON.stringify(record(currentId)));editing=false;validated=false;
+ document.getElementById('formTitle').textContent=types.recue.title;renderForm();renderHistory();
+ let rows=working.lines.map((l,i)=>`<div class="formgrid"><div class="field"><label>Article</label><input value="${esc(l.ARTICLE)}" disabled></div><div class="field"><label>Lot</label><input value="${esc(l.LOT)}" disabled></div><div class="field"><label>Quantité expédiée</label><input value="${esc(l.QUANTITE)}" disabled></div><div class="field"><label>Quantité reçue *</label><input type="number" min="0" data-received="${i}" value="${esc(l.receivedQty??l.QUANTITE)}"></div></div>`).join('');
+ document.getElementById('receivedLines').innerHTML=rows;
+ setNotice('Réception du BL '+working.bl+'. Vérifie chaque quantité reçue.');
+}
+function completeReceipt(){
+ let bl=document.getElementById('receiptBL')?.value.trim();
+ let r=db.records.find(x=>x.bl===bl);
+ if(!r){alert('BL introuvable.');return}
+ if(r.status==='Livrée'){alert('Cette navette est déjà livrée et verrouillée.');return}
+ const sap=document.getElementById('sapDone').value;
+ if(!sap){alert('Indique si le rangement SAP a été effectué.');return}
+ if(sap==='no'){r.status='Régularisation requise';r.sap=false;log('Réception en attente',r.id,'Rangement SAP à régulariser');saveDB();working=JSON.parse(JSON.stringify(r));currentId=r.id;mode='preparee';renderForm();renderHistory();refreshDashboard();setNotice('Rangement SAP non confirmé : la navette reste en attente de régularisation.');return}
+ const received=[...document.querySelectorAll('[data-received]')];
+ let diff=[];
+ received.forEach(el=>{let i=Number(el.dataset.received),sent=Number(r.lines[i].QUANTITE||0),got=Number(el.value);r.lines[i].receivedQty=got;if(got!==sent)diff.push({article:r.lines[i].ARTICLE,lot:r.lines[i].LOT,envoyee:sent,recue:got})});
+ if(received.some(el=>el.value===''||Number(el.value)<0)){alert('Saisis une quantité reçue valide pour chaque ligne.');return}
+ if(!userName())return;
+ r.received=true;r.sap=true;r.status='Livrée';r.receivedDate=iso();r.updated=iso();r.discrepancies=diff;
+ log('Réception',r.id,diff.length?'Écart(s) : '+JSON.stringify(diff):'Quantités conformes, rangement SAP confirmé');
+ saveDB();working=JSON.parse(JSON.stringify(r));currentId=r.id;mode='preparee';editing=false;validated=true;renderForm();renderHistory();refreshDashboard();
+ setNotice(diff.length?'Réception enregistrée avec '+diff.length+' écart(s). Notification simulée aux deux sites.':'Réception validée. Rangement SAP confirmé. La navette et le BL sont désormais verrouillés.');
+ alert(diff.length?'Écart(s) détecté(s). Les notifications sont simulées, aucun mail n’a été envoyé.':'Réception validée. Navette verrouillée.');
+}
+function renderHistory(){
+ const el=document.getElementById('history');if(!el)return;
+ el.innerHTML='<table><thead><tr><th>Date</th><th>Utilisateur</th><th>Action</th><th>Référence</th><th>Détail</th></tr></thead><tbody>'+
+ db.history.slice(0,50).map(h=>`<tr><td>${esc(h.date)}</td><td>${esc(h.user)}</td><td>${esc(h.action)}</td><td>${esc(h.id)}</td><td>${esc(h.detail)}</td></tr>`).join('')+'</tbody></table>';
+}
+function bar(label,value,max,color=''){
+ let width=max?Math.round(value/max*100):0;
+ return `<div class="barline"><span>${esc(label)}</span><div class="track"><div class="fill" style="width:${width}%;${color?'background:'+color:''}"></div></div><span>${value}</span></div>`;
+}
+function refreshDashboard(){
+ const sh=db.records.filter(r=>r.type==='preparee'||r.type==='expediee'||r.type==='recue');
+ const done=sh.filter(r=>r.status==='Livrée');
+ document.getElementById('kTotal').textContent=done.length;
+ document.getElementById('kAB').textContent=done.filter(r=>r.lines.some(l=>l.depuis==='A'&&l.vers==='B')).length;
+ document.getElementById('kBA').textContent=done.filter(r=>r.lines.some(l=>l.depuis==='B'&&l.vers==='A')).length;
+ document.getElementById('kPending').textContent=db.records.filter(r=>!['Livrée','Annulée'].includes(r.status)).length;
+ const year=String(new Date().getFullYear()),months=Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0'));
+ const counts=months.map(m=>done.filter(r=>(r.receivedDate||r.depart||'').startsWith(year+'-'+m)).length),max=Math.max(1,...counts);
+ document.getElementById('monthly').innerHTML=months.map((m,i)=>bar(['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'][i],counts[i],max)).join('');
+ const days=['Lun','Mar','Mer','Jeu','Ven'];let dc=days.map(()=>0),cc={};
+ done.forEach(r=>{let d=new Date((r.receivedDate||r.depart)+'T12:00:00').getDay();if(d>=1&&d<=5)dc[d-1]++;(r.lines||[]).forEach(l=>{if(l.transporteur)cc[l.transporteur]=(cc[l.transporteur]||0)+1})});
+ document.getElementById('weekdays').innerHTML=days.map((d,i)=>bar(d,dc[i],Math.max(1,...dc))).join('');
+ let carr=Object.entries(cc).sort((a,b)=>b[1]-a[1]),ctotal=carr.reduce((s,a)=>s+a[1],0)||1;
+ const colors=['#438cf2','#f3b64c','#35b77a','#c46be3'];
+ document.getElementById('carriers').innerHTML=carr.length?carr.map(([n,v],i)=>`<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;gap:8px"><span>${esc(n)}</span><strong>${Math.round(v/ctotal*100)}%</strong></div><div class="track" style="margin-top:5px"><div class="fill" style="width:${v/ctotal*100}%;background:${colors[i%colors.length]}"></div></div></div>`).join(''):'<p class="muted">Aucune donnée transporteur</p>';
+ document.getElementById('recent').innerHTML='<table><thead><tr><th>Numéro</th><th>Date prévue</th><th>Trajet</th><th>Transporteur</th><th>BL</th><th>Statut</th><th></th></tr></thead><tbody>'+
+ sh.slice().sort((a,b)=>(b.updated||'').localeCompare(a.updated||'')).slice(0,10).map(r=>`<tr><td>${esc(r.id)}</td><td>${esc(r.depart||'')}</td><td>${esc((r.lines[0]?.depuis||'?')+' → '+(r.lines[0]?.vers||'?'))}</td><td>${esc(r.lines[0]?.transporteur||'')}</td><td>${esc(r.bl||'')}</td><td><span class="status">${esc(r.status)}</span></td><td><button class="grey" onclick="quickOpen('${r.id}')">Ouvrir</button></td></tr>`).join('')+'</tbody></table>';
+}
+function quickOpen(id){let r=record(id);if(!r)return;openForm(r.type);document.getElementById('lookupId').value=id;loadRecord()}
+function searchAll(){
+ const a=document.getElementById('searchArticle').value.trim().toLowerCase(),l=document.getElementById('searchLot').value.trim().toLowerCase(),d=document.getElementById('searchDate').value;
+ if(!a&&!l&&!d){alert('Saisis au moins un critère de recherche.');return}
+ let results=[];
+ db.records.filter(r=>r.status!=='Annulée').forEach(r=>(r.lines||[]).forEach(line=>{
+ const article=String(line.Article||line.ARTICLE||'').toLowerCase(),lot=String(line.Lot||line.LOT||'').toLowerCase(),date=String(line.DATE||r.depart||'');
+ if((!a||article.includes(a))&&(!l||lot.includes(l))&&(!d||date===d))results.push({r,line,source:r.type==='transfert'||r.type==='retour'?'Demandes':'Navettes effectuées'});
+ }));
+ const el=document.getElementById('searchResults');
+ el.innerHTML=results.length?'<table><thead><tr><th>Référence</th><th>Source</th><th>Article</th><th>Lot</th><th>Date</th><th>Statut</th><th></th></tr></thead><tbody>'+results.map(x=>`<tr><td>${esc(x.r.id)}</td><td>${esc(x.source)}</td><td>${esc(x.line.Article||x.line.ARTICLE||'')}</td><td>${esc(x.line.Lot||x.line.LOT||'')}</td><td>${esc(x.line.DATE||x.r.depart||'')}</td><td>${esc(x.r.status)}</td><td><button class="grey" onclick="quickOpen('${x.r.id}')">Ouvrir</button></td></tr>`).join('')+'</tbody></table>':'<p class="muted" style="padding:12px">Aucun résultat trouvé dans les demandes ni dans les navettes.</p>';
+}
+function clearSearch(){['searchArticle','searchLot','searchDate'].forEach(id=>document.getElementById(id).value='');document.getElementById('searchResults').innerHTML=''}
+function resetDemo(){if(!confirm('Réinitialiser toutes les données locales et recharger les données fictives ?'))return;db=seed();saveDB();showDashboard();alert('Données fictives réinitialisées.')}
+loadDB();refreshDashboard();
+</script>
